@@ -70,14 +70,13 @@ public class HookReverseSliderAtBoot implements IXposedHookLoadPackage {
                         }
                     }
                     else{
-                        XposedBridge.log("set notification value: " + settings.getBoolean("extendedZenModeControl", true) + settings.getInt("extendedZenModeControlZenMode", 1));
+                        XposedBridge.log("set notification value: " + settings.getBoolean("extendedZenModeControl", true) + settings.getInt("extendedZenModeControlZenMode", 1) + " from: " + param.args[0]);
                         Log.w("CustomAlertSlider", "CustomSlider: set notification always to ALL");
 
-                        if(settings.getBoolean("extendedZenModeControl", true)) {
-                            if ((int)param.args[0] == 3)
-                                param.args[0] = 2;
-                        }
-                        else
+
+                        if (settings.getInt("extendedZenModeControlZenMode", 3) == 3 || settings.getInt("extendedZenModeControlZenMode", 3) == 1)
+                            param.args[0] = 2;
+                        else if (settings.getInt("extendedZenModeControlZenMode", 3) == 2)
                             param.args[0] = 3;
 
                     }
@@ -91,20 +90,18 @@ public class HookReverseSliderAtBoot implements IXposedHookLoadPackage {
                     if (settings.getBoolean("extremeCustomization", false)) {
                         settings.edit().putBoolean("comingFromBoot", false).apply();
 
-                        if(settings.getBoolean("extendedZenModeControl", true)){
-                            Intent intentZenMode = new Intent(TRI_STATE_KEY_INTENT);
-                            intentZenMode.putExtra(TRI_STATE_KEY_INTENT_EXTRA, settings.getInt("extendedZenModeControlZenMode", 3));
-                            Constructor newUserHandle = XposedHelpers.findConstructorBestMatch(UserHandle.class, int.class);
-                            try {
-                                UserHandle userhandle = (UserHandle) newUserHandle.newInstance(-1);
-                                AndroidAppHelper.currentApplication().sendBroadcastAsUser(intentZenMode, userhandle);
-                            } catch (InstantiationException e) {
-                                e.printStackTrace();
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            } catch (InvocationTargetException e) {
-                                e.printStackTrace();
-                            }
+                        Intent intentZenMode = new Intent(TRI_STATE_KEY_INTENT);
+                        intentZenMode.putExtra(TRI_STATE_KEY_INTENT_EXTRA, settings.getInt("extendedZenModeControlZenMode", 3));
+                        Constructor newUserHandle = XposedHelpers.findConstructorBestMatch(UserHandle.class, int.class);
+                        try {
+                            UserHandle userhandle = (UserHandle) newUserHandle.newInstance(-1);
+                            AndroidAppHelper.currentApplication().sendBroadcastAsUser(intentZenMode, userhandle);
+                        } catch (InstantiationException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
                         }
                     }
                 }

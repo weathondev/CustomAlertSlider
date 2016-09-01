@@ -11,6 +11,7 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
@@ -128,11 +129,17 @@ public class HookZenModeChange implements IXposedHookLoadPackage {
                 }
                 else{
                     Log.w("CustomAlertSlider", "CustomSlider: set notification always to ALL");
+                    /*
                     newNotificationMode = (int)param.args[0];
                     param.args[0] = 3;
 
                     if(settings.getBoolean("extendedZenModeControl", true))
-                        param.args[0] = settings.getInt("extendedZenModeControlZenMode", 3);
+                        param.args[0] = settings.getInt("extendedZenModeControlZenMode", 3);*/
+
+                    Vibrator v = (Vibrator) AndroidAppHelper.currentApplication().getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(50);
+
+                    param.setResult(null);
                 }
             }
             @Override
