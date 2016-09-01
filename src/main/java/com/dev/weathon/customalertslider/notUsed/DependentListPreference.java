@@ -12,7 +12,7 @@ import com.dev.weathon.customalertslider.R;
  */
 public class DependentListPreference extends ListPreference{
     private final String CLASS_NAME = this.getClass().getSimpleName();
-    private String dependentValue = "";
+    private String dependentValue = "a";
 
     public DependentListPreference(Context context) {
         this(context,null);
