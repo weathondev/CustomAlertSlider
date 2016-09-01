@@ -1,0 +1,182 @@
+<resources>
+    <string name="app_name" translatable="false">Custom Slider</string>
+
+    <string name="title_activity_settings" translatable="false">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_header_notslider">Notification Slider</string>
+
+    <string name="pref_header_cusslider">Custom Slider</string>
+
+    <string name="pref_title_extremeCustomization">Extreme customization</string>
+    <string name="pref_summary_extremeCustomization">Custom actions on slider change.</string>
+
+    <string name="pref_title_hide_toasts">Hide Notification Toasts</string>
+    <string name="pref_summary_hide_toasts">Hide the notification toasts that appear, when switching the sliders position.</string>
+
+    <string name="pref_title_show_icon">Hide App Icon in Launcher</string>
+    <string name="pref_summary_show_icon">Hides the app icon in the launcher. You need to restart your phone/launcher to activate the change. The app is still accessible from Xposed.</string>
+
+    <string name="pref_title_reverseSlider">Reverse Slider</string>
+    <string name="pref_summary_reverseSlider">The top and the bottom position is switched.</string>
+
+    <string name="pref_title_vibrateInsteadPriority">Vibrate instead of Priority</string>
+    <string name="pref_summary_vibrateInsteadPriority">Replaces the priority mode with a vibrate mode.</string>
+
+    <string name="pref_title_silentMedia_inVibrate">Silence Media Volume</string>
+    <string name="pref_summary_silentMedia_inVibrate">Sets the media volume to 0 when in vibrate mode.</string>
+
+
+    <string name="startappstring">Start Application</string>
+
+    <string name="pref_title_topPosition">Top Slider Position</string>
+
+    <string name="noAction">No Action</string>
+
+    <string-array name="pref_sliderposition_list_titles">
+        <item>Airplane mode [ON]</item>
+        <item>Airplane mode [OFF]</item>
+        <item>Bluetooth [ON]</item>
+        <item>Bluetooth [OFF]</item>
+        <item>Flashlight [ON]</item>
+        <item>Flashlight [OFF]</item>
+        <item>GPS High Accuracy</item>
+        <item>GPS Device Only</item>
+        <item>GPS Battery Saving</item>
+        <item>GPS [OFF]</item>
+        <item>Mobile Data [ON]</item>
+        <item>Mobile Data [OFF]</item>
+        <item>Preferred Network 2G</item>
+        <item>Preferred Network 3G</item>
+        <item>Preferred Network 4G</item>
+        <item>@string/startappstring</item>
+        <item>Wifi [ON]</item>
+        <item>Wifi [OFF]</item>
+    </string-array>
+    <string-array name="pref_topPosition_list_values">
+        <item>AIRPLANE_ON</item>
+        <item>AIRPLANE_OFF</item>
+        <item>BLUETOOTH_ON</item>
+        <item>BLUETOOTH_OFF</item>
+        <item>FLASHLIGHT_ON</item>
+        <item>FLASHLIGHT_OFF</item>
+        <item>GPS_HIGH_ACCURACY</item>
+        <item>GPS_DEVICE_ONLY</item>
+        <item>GPS_BATTERY_SAVING</item>
+        <item>GPS_OFF</item>
+        <item>MOBILE_DATA_ON</item>
+        <item>MOBILE_DATA_OFF</item>
+        <item>PREFER_NETWORK_2G</item>
+        <item>PREFER_NETWORK_3G</item>
+        <item>PREFER_NETWORK_4G</item>
+        <item>STARTAPP</item>
+        <item>WIFI_ON</item>
+        <item>WIFI_OFF</item>
+    </string-array>
+
+    <string name="pref_title_midPosition">Middle Slider Position</string>
+    <string-array name="pref_midPosition_list_values">
+        <item>AIRPLANE_ON</item>
+        <item>AIRPLANE_OFF</item>
+        <item>BLUETOOTH_ON</item>
+        <item>BLUETOOTH_OFF</item>
+        <item>FLASHLIGHT_ON</item>
+        <item>FLASHLIGHT_OFF</item>
+        <item>GPS_HIGH_ACCURACY</item>
+        <item>GPS_DEVICE_ONLY</item>
+        <item>GPS_BATTERY_SAVING</item>
+        <item>GPS_OFF</item>
+        <item>MOBILE_DATA_ON</item>
+        <item>MOBILE_DATA_OFF</item>
+        <item>PREFER_NETWORK_2G</item>
+        <item>PREFER_NETWORK_3G</item>
+        <item>PREFER_NETWORK_4G</item>
+        <item>STARTAPP</item>
+        <item>WIFI_ON</item>
+        <item>WIFI_OFF</item>
+    </string-array>
+
+    <string name="pref_title_botPosition">Bottom Slider Position</string>
+    <string-array name="pref_botPosition_list_values">
+        <item>AIRPLANE_ON</item>
+        <item>AIRPLANE_OFF</item>
+        <item>BLUETOOTH_ON</item>
+        <item>BLUETOOTH_OFF</item>
+        <item>FLASHLIGHT_ON</item>
+        <item>FLASHLIGHT_OFF</item>
+        <item>GPS_HIGH_ACCURACY</item>
+        <item>GPS_DEVICE_ONLY</item>
+        <item>GPS_BATTERY_SAVING</item>
+        <item>GPS_OFF</item>
+        <item>MOBILE_DATA_ON</item>
+        <item>MOBILE_DATA_OFF</item>
+        <item>PREFER_NETWORK_2G</item>
+        <item>PREFER_NETWORK_3G</item>
+        <item>PREFER_NETWORK_4G</item>
+        <item>STARTAPP</item>
+        <item>WIFI_ON</item>
+        <item>WIFI_OFF</item>
+    </string-array>
+
+    <string name="AlertDialogMessage">If you reverse the alert slider positions, there is a graphical issue in the volume control after rebooting the phone.
+    When you boot up the phone with the slider on the top position, it will be shown like it is "Silent". In real, it is on "All Notifications", and everything will work.
+    You can even adjust the volume with the hardware buttons. The same applies if you boot the phone up with the bottom position. It will be shown as "All Notifications" but it is silent
+    and you will not be able to adjust the volume.</string>
+    <string name="AlertDialogTitle">Warning!</string>
+
+    <string name="AlertDialogMessage_VibrateMode">In order to let the Vibrate Mode work correctly, the priority settings need to be adjusted. You can find them
+    under your phones settings -> alert slider -> priority mode. Set Calls/Messages to From Anyone. When you want that the phone also vibrates
+    when there is a Whatsapp Message e.g. you need to set its notifications to priority. Just open the App info of the specific app and set Notifications
+    to Treat As Priority.</string>
+
+    <string name="Ok">OK</string>
+    <string name="GoToPrioritySettings">Go To Priority Settings</string>
+
+
+    <string-array name="pref_language_list_values">
+        <item>system</item>
+        <item>en</item>
+        <item>de</item>
+        <item>hr</item>
+        <item>pl</item>
+        <item>ru</item>
+        <item>zh</item>
+    </string-array>
+    <string-array name="pref_language_list_titles">
+        <item>System language</item>
+        <item>English</item>
+        <item>Deutsch</item>
+        <item>Hrvatski</item>
+        <item>Polski</item>
+        <item>Pусский</item>
+        <item>中文字</item>
+    </string-array>
+    <string name="pref_title_language">Language</string>
+    <string name="pref_donate_title">Donate via Paypal</string>
+
+    <string name="pref_extendedVolumeControl">Extended Volume Control</string>
+    <string name="pref_extendedVolumeControl_summary">Extends the Volume Control (pressing volume up/down hardware keys), in order to let the user switch between the audio modes of the slider. (Silent-Priority-All)</string>
+
+    <string name="vibrateModeDefaultText">Vibration</string>
+    <string name="pref_title_vibrateModeText">Vibrate Mode Text</string>
+
+    <string name="customSlider_screen">Customize the slider</string>
+    <string name="notificationSlider_screen">Improve notification slider</string>
+
+    <string name="pref_category_main_header">Main</string>
+
+
+
+
+    <string name="extendedVolumeControlSilentText">SILENT</string>
+    <string name="pref_title_extendedVolumeControlSilentText">Extended Volume Control Silent Text</string>
+    <string name="extendedVolumeControlPriorityText">PRIORITY</string>
+    <string name="pref_title_extendedVolumeControlPriorityText">Extended Volume Control Priority Text</string>
+    <string name="extendedVolumeControlAllNotText">ALL</string>
+    <string name="pref_title_extendedVolumeControlAllNotText">Extended Volume Control All Text</string>
+
+</resources>

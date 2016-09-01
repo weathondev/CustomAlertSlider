@@ -1,0 +1,8 @@
+com.dev.weathon.customalertslider.hooks.HookZenToast
+com.dev.weathon.customalertslider.hooks.HookReplaceDndIconAndText
+com.dev.weathon.customalertslider.hooks.HookComingFromBoot
+com.dev.weathon.customalertslider.hooks.HookReverseSliderAtBoot
+com.dev.weathon.customalertslider.hooks.HookZenModeChange
+com.dev.weathon.customalertslider.hooks.HookRemoveDndIcon
+com.dev.weathon.customalertslider.hooks.HookRestrictVibrateVolume
+com.dev.weathon.customalertslider.hooks.HookZenFooter

@@ -1,0 +1,127 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+         dismiss it. -->
+    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+
+
+
+<PreferenceCategory
+    android:title="@string/pref_category_main_header">
+    <PreferenceScreen
+        android:title="@string/pref_header_notslider"
+        android:key="prefScreenNotificationSlider"
+        android:summary="@string/notificationSlider_screen">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="reverseSlider"
+            android:title="@string/pref_title_reverseSlider"
+            android:summary="@string/pref_summary_reverseSlider" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="vibrateInsteadPriority"
+            android:title="@string/pref_title_vibrateInsteadPriority"
+            android:summary="@string/pref_summary_vibrateInsteadPriority"/>
+
+        <EditTextPreference
+            android:defaultValue="@string/vibrateModeDefaultText"
+            android:key="vibrateModeText"
+            android:title="@string/pref_title_vibrateModeText"
+            android:dependency="vibrateInsteadPriority">
+        </EditTextPreference>
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="silentMediaInVibrate"
+            android:title="@string/pref_title_silentMedia_inVibrate"
+            android:summary="@string/pref_summary_silentMedia_inVibrate"
+            android:dependency="vibrateInsteadPriority"/>
+    </PreferenceScreen>
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="extremeCustomization"
+        android:title="@string/pref_title_extremeCustomization"
+        android:summary="@string/pref_summary_extremeCustomization"/>
+    <PreferenceScreen
+        android:title="@string/pref_header_cusslider"
+        android:key="prefScreenCustomSlider"
+        android:summary="@string/customSlider_screen">
+
+        <com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer
+            android:title="@string/pref_title_topPosition"
+            android:key="topPosition"
+            android:entries="@array/pref_sliderposition_list_titles"
+            android:entryValues="@array/pref_topPosition_list_values">
+        </com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer>
+
+        <com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer
+            android:title="@string/pref_title_midPosition"
+            android:key="midPosition"
+            android:entries="@array/pref_sliderposition_list_titles"
+            android:entryValues="@array/pref_midPosition_list_values">
+        </com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer>
+
+        <com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer
+            android:title="@string/pref_title_botPosition"
+            android:key="botPosition"
+            android:entries="@array/pref_sliderposition_list_titles"
+            android:entryValues="@array/pref_botPosition_list_values">
+        </com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer>
+
+        <SwitchPreference
+            android:title="@string/pref_extendedVolumeControl"
+            android:key="extendedZenModeControl"
+            android:defaultValue="true"
+            android:summary="@string/pref_extendedVolumeControl_summary"/>
+
+        <EditTextPreference
+            android:defaultValue="@string/extendedVolumeControlSilentText"
+            android:key="extendedVolumeControlSilentText"
+            android:title="@string/pref_title_extendedVolumeControlSilentText"
+            android:dependency="extendedZenModeControl">
+        </EditTextPreference>
+        <EditTextPreference
+            android:defaultValue="@string/extendedVolumeControlPriorityText"
+            android:key="extendedVolumeControlPriorityText"
+            android:title="@string/pref_title_extendedVolumeControlPriorityText"
+            android:dependency="extendedZenModeControl">
+        </EditTextPreference>
+        <EditTextPreference
+            android:defaultValue="@string/extendedVolumeControlAllNotText"
+            android:key="extendedVolumeControlAllNotText"
+            android:title="@string/pref_title_extendedVolumeControlAllNotText"
+            android:dependency="extendedZenModeControl">
+        </EditTextPreference>
+    </PreferenceScreen>
+</PreferenceCategory>
+
+<PreferenceCategory
+    android:title="@string/pref_header_general">
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hideToast"
+        android:title="@string/pref_title_hide_toasts"
+        android:summary="@string/pref_summary_hide_toasts"/>
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="showIcon"
+        android:title="@string/pref_title_show_icon"
+        android:summary="@string/pref_summary_show_icon"/>
+
+    <Preference
+        android:title="@string/pref_donate_title"
+        android:key="donate" />
+</PreferenceCategory>
+        <!--
+        <ListPreference
+            android:defaultValue="system"
+            android:title="@string/pref_title_language"
+            android:key="language"
+            android:entries="@array/pref_language_list_titles"
+            android:entryValues="@array/pref_language_list_values"/>-->
+
+</PreferenceScreen>
