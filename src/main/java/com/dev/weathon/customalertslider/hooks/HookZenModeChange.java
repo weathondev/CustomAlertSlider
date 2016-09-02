@@ -129,8 +129,9 @@ public class HookZenModeChange implements IXposedHookLoadPackage {
                 }
                 else{
                     Log.w("CustomAlertSlider", "CustomSlider: set notification always to ALL");
-                    /*
+
                     newNotificationMode = (int)param.args[0];
+                    /*
                     param.args[0] = 3;
 
                     if(settings.getBoolean("extendedZenModeControl", true))
