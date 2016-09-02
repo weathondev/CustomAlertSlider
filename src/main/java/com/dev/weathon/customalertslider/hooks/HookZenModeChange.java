@@ -18,6 +18,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.crossbowffs.remotepreferences.RemotePreferences;
+import com.dev.weathon.customalertslider.HookUtils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -251,175 +252,43 @@ public class HookZenModeChange implements IXposedHookLoadPackage {
     //Activate Custom States
     private static void activateStates(Context context, ArrayList<MyEnum> modeList, int position){
         if (modeList.contains(MyEnum.AIRPLANE_ON))
-            enableAirplane(1);
+            HookUtils.enableAirplane(1);
         if (modeList.contains(MyEnum.AIRPLANE_OFF))
-            enableAirplane(0);
+            HookUtils.enableAirplane(0);
         if (modeList.contains(MyEnum.BLUETOOTH_ON))
-            enableBluetooth(true);
+            HookUtils.enableBluetooth(true);
         if (modeList.contains(MyEnum.BLUETOOTH_OFF))
-            enableBluetooth(false);
+            HookUtils.enableBluetooth(false);
         if (modeList.contains(MyEnum.FLASHLIGHT_ON))
-            enableFlashlight(context,true);
+            HookUtils.enableFlashlight(context,true);
         if (modeList.contains(MyEnum.FLASHLIGHT_OFF))
-            enableFlashlight(context, false);
+            HookUtils.enableFlashlight(context, false);
         if (modeList.contains(MyEnum.GPS_HIGH_ACCURACY))
-            setGPS(context, Settings.Secure.LOCATION_MODE_HIGH_ACCURACY);
+            HookUtils.setGPS(context, Settings.Secure.LOCATION_MODE_HIGH_ACCURACY);
         if (modeList.contains(MyEnum.GPS_DEVICE_ONLY))
-            setGPS(context, Settings.Secure.LOCATION_MODE_SENSORS_ONLY);
+            HookUtils.setGPS(context, Settings.Secure.LOCATION_MODE_SENSORS_ONLY);
         if (modeList.contains(MyEnum.GPS_BATTERY_SAVING))
-            setGPS(context, Settings.Secure.LOCATION_MODE_BATTERY_SAVING);
+            HookUtils.setGPS(context, Settings.Secure.LOCATION_MODE_BATTERY_SAVING);
         if (modeList.contains(MyEnum.GPS_OFF))
-            setGPS(context, Settings.Secure.LOCATION_MODE_OFF);
+            HookUtils.setGPS(context, Settings.Secure.LOCATION_MODE_OFF);
         if (modeList.contains(MyEnum.MOBILE_DATA_ON))
-            enableMobileData(context, true);
+            HookUtils.enableMobileData(context, true);
         if (modeList.contains(MyEnum.MOBILE_DATA_OFF))
-            enableMobileData(context, false);
+            HookUtils.enableMobileData(context, false);
         if (modeList.contains(MyEnum.PREFER_NETWORK_2G))
-            setPreferredNetworkType(context, NETWORK_MODE_GSM_ONLY);
+            HookUtils.setPreferredNetworkType(context, NETWORK_MODE_GSM_ONLY);
         if (modeList.contains(MyEnum.PREFER_NETWORK_3G))
-            setPreferredNetworkType(context, NETWORK_MODE_GSM_UMTS);
+            HookUtils.setPreferredNetworkType(context, NETWORK_MODE_GSM_UMTS);
         if (modeList.contains(MyEnum.PREFER_NETWORK_4G))
-            setPreferredNetworkType(context, NETWORK_MODE_LTE_GSM_WCDMA);
+            HookUtils.setPreferredNetworkType(context, NETWORK_MODE_LTE_GSM_WCDMA);
         if (modeList.contains(MyEnum.STARTAPP))
-            startApp(context, position);
+            HookUtils.startApp(context, position);
         if (modeList.contains(MyEnum.WIFI_ON))
-            enableWifi(context, true);
+            HookUtils.enableWifi(context, true);
         if (modeList.contains(MyEnum.WIFI_OFF))
-            enableWifi(context, false);
-    }
-
-
-    //Custom Action Methods
-    private static void enableAirplane(int enable){
-        //boolean enable = Settings.Global.getInt(AndroidAppHelper.currentApplication().getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, 0) == 1;
-        //Settings.Global.putInt(AndroidAppHelper.currentApplication().getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, enable ? 0 : 1);
-        Settings.Global.putInt(AndroidAppHelper.currentApplication().getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, enable);
-        Intent intentAirplane = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-        //intentAirplane.putExtra("state", enable ? 0 : 1);
-        intentAirplane.putExtra("state", enable);
-        AndroidAppHelper.currentApplication().sendBroadcast(intentAirplane);
-    }
-    @SuppressWarnings("MissingPermission")
-    private static void enableBluetooth(boolean enable){
-        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-        /*
-        if (adapter.isEnabled())
-            adapter.disable();
-        else
-            adapter.enable();*/
-        if(enable)
-            adapter.enable();
-        else
-            adapter.disable();
-    }
-    private static void enableFlashlight(Context context, boolean enable){
-        try{
-            CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
-            if (enable)
-                manager.setTorchMode(manager.getCameraIdList()[0], true);
-            else
-                manager.setTorchMode(manager.getCameraIdList()[0], false);
-        }
-        catch (CameraAccessException cae){
-            Log.e("CustomAlertSlider", cae.getMessage());
-            cae.printStackTrace();
-        }
-    }
-    private static void setGPS(Context context, int mode) {
-        /*
-        //Get GPS now state (open or closed)
-        boolean gpsEnabled = Settings.Secure.isLocationProviderEnabled(context.getContentResolver(), LocationManager.GPS_PROVIDER);
-
-        if (gpsEnabled) {
-            Settings.Secure.putInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE, 0);
-        } else {
-            Settings.Secure.putInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE, 3);
-        }*/
-
-        Settings.Secure.putInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE, mode);
-    }
-    private static void enableMobileData(Context context, boolean enable) {
-        try
-        {
-            TelephonyManager telephonyService = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
-
-            Method setMobileDataEnabledMethod = telephonyService.getClass().getDeclaredMethod("setDataEnabled", boolean.class);
-
-            if (null != setMobileDataEnabledMethod)
-            {
-
-                //setMobileDataEnabledMethod.invoke(telephonyService, !getMobileDataState(context));
-                setMobileDataEnabledMethod.invoke(telephonyService, enable);
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.e("CustomAlertSlider", "Error setting mobile data state", ex);
-        }
-    }
-    private static void setPreferredNetworkType(Context context, int prefNetworkType){
-        try{
-            TelephonyManager telephonyService = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
-            Method getDefaultDataSubIdMethod = SubscriptionManager.class.getDeclaredMethod("getDefaultDataSubId");
-            Method setPreferredNetworkTypeMethod = telephonyService.getClass().getDeclaredMethod("setPreferredNetworkType", int.class, int.class);
-
-            if(null != getDefaultDataSubIdMethod && null != setPreferredNetworkTypeMethod){
-                int defaultId = (int) getDefaultDataSubIdMethod.invoke(telephonyService);
-                setPreferredNetworkTypeMethod.invoke(telephonyService, defaultId, prefNetworkType);
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.e("CustomAlertSlider", "Error setting to 2g", ex);
-        }
-    }
-    private static void startApp(Context context, int position){
-        String packagename = null;
-        if (position == 1)
-            packagename = new RemotePreferences(AndroidAppHelper.currentApplication(), "com.dev.weathon.customalertslider", "com.dev.weathon.customalertslider_preferences").getString("topPosition_app", null);
-        else if (position == 2)
-            packagename = new RemotePreferences(AndroidAppHelper.currentApplication(), "com.dev.weathon.customalertslider", "com.dev.weathon.customalertslider_preferences").getString("midPosition_app", null);
-        else if (position == 3)
-            packagename = new RemotePreferences(AndroidAppHelper.currentApplication(), "com.dev.weathon.customalertslider", "com.dev.weathon.customalertslider_preferences").getString("botPosition_app", null);
-
-        if (packagename != null){
-            Intent i = context.getPackageManager().getLaunchIntentForPackage(packagename);
-            context.startActivity(i);
-        }
-    }
-    @SuppressWarnings("MissingPermission")
-    private static void enableWifi(Context context, boolean enable){
-        WifiManager wifiManager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
-        /*
-        if (wifiManager.isWifiEnabled())
-            wifiManager.setWifiEnabled(false);
-        else
-            wifiManager.setWifiEnabled(true);*/
-
-        wifiManager.setWifiEnabled(enable);
+            HookUtils.enableWifi(context, false);
     }
 
 
 
-    /*private static boolean getMobileDataState(Context context) {
-        try
-        {
-            TelephonyManager telephonyService = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
-
-            Method getMobileDataEnabledMethod = telephonyService.getClass().getDeclaredMethod("getDataEnabled");
-
-            if (null != getMobileDataEnabledMethod)
-            {
-                boolean mobileDataEnabled = (Boolean) getMobileDataEnabledMethod.invoke(telephonyService);
-
-                return mobileDataEnabled;
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.e("CustomAlertSlider", "Error getting mobile data state", ex);
-        }
-
-        return false;
-    }*/
 }
