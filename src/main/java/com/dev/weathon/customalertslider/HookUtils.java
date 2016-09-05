@@ -12,16 +12,100 @@ import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.crossbowffs.remotepreferences.RemotePreferences;
-
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Joshua on 02.09.2016.
  */
 public final class HookUtils { //final because the class should be handled like c#'s static class
 
+
+    private static int NETWORK_MODE_GSM_ONLY = 1; //2g
+    private static int NETWORK_MODE_GSM_UMTS = 3; //3g
+    private static int NETWORK_MODE_LTE_GSM_WCDMA = 9; //4g
+
     private HookUtils(){} //private constructor because the class should be handled like c#'s static class
+
+
+    public enum MyEnum {
+        AIRPLANE_ON(1),
+        AIRPLANE_OFF(2),
+        BLUETOOTH_ON(3),
+        BLUETOOTH_OFF(4),
+        FLASHLIGHT_ON(5),
+        FLASHLIGHT_OFF(6),
+        GPS_HIGH_ACCURACY(7),
+        GPS_DEVICE_ONLY(8),
+        GPS_BATTERY_SAVING(9),
+        GPS_OFF(10),
+        MOBILE_DATA_ON(11),
+        MOBILE_DATA_OFF(12),
+        PREFER_NETWORK_2G(13),
+        PREFER_NETWORK_3G(14),
+        PREFER_NETWORK_4G(15),
+        STARTAPP(16),
+        WIFI_ON(17),
+        WIFI_OFF(18),
+        ALL_NOTIFICATIONS(19),
+        PRIORITY(20),
+        ALARMS_ONLY(21),
+        TOTAL_SILENCE(22);
+
+        private final int value;
+
+        private MyEnum(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return this.value;
+        }
+    }
+
+    //Activate Custom States
+    public static void activateStates(Context context, ArrayList<MyEnum> modeList, String appToStart){
+        if (modeList.contains(MyEnum.AIRPLANE_ON))
+            HookUtils.enableAirplane(1);
+        if (modeList.contains(MyEnum.AIRPLANE_OFF))
+            HookUtils.enableAirplane(0);
+        if (modeList.contains(MyEnum.BLUETOOTH_ON))
+            HookUtils.enableBluetooth(true);
+        if (modeList.contains(MyEnum.BLUETOOTH_OFF))
+            HookUtils.enableBluetooth(false);
+        if (modeList.contains(MyEnum.FLASHLIGHT_ON))
+            HookUtils.enableFlashlight(context,true);
+        if (modeList.contains(MyEnum.FLASHLIGHT_OFF))
+            HookUtils.enableFlashlight(context, false);
+        if (modeList.contains(MyEnum.GPS_HIGH_ACCURACY))
+            HookUtils.setGPS(context, Settings.Secure.LOCATION_MODE_HIGH_ACCURACY);
+        if (modeList.contains(MyEnum.GPS_DEVICE_ONLY))
+            HookUtils.setGPS(context, Settings.Secure.LOCATION_MODE_SENSORS_ONLY);
+        if (modeList.contains(MyEnum.GPS_BATTERY_SAVING))
+            HookUtils.setGPS(context, Settings.Secure.LOCATION_MODE_BATTERY_SAVING);
+        if (modeList.contains(MyEnum.GPS_OFF))
+            HookUtils.setGPS(context, Settings.Secure.LOCATION_MODE_OFF);
+        if (modeList.contains(MyEnum.MOBILE_DATA_ON))
+            HookUtils.enableMobileData(context, true);
+        if (modeList.contains(MyEnum.MOBILE_DATA_OFF))
+            HookUtils.enableMobileData(context, false);
+        if (modeList.contains(MyEnum.PREFER_NETWORK_2G))
+            HookUtils.setPreferredNetworkType(context, NETWORK_MODE_GSM_ONLY);
+        if (modeList.contains(MyEnum.PREFER_NETWORK_3G))
+            HookUtils.setPreferredNetworkType(context, NETWORK_MODE_GSM_UMTS);
+        if (modeList.contains(MyEnum.PREFER_NETWORK_4G))
+            HookUtils.setPreferredNetworkType(context, NETWORK_MODE_LTE_GSM_WCDMA);
+        if (modeList.contains(MyEnum.STARTAPP))
+            HookUtils.startApp(context, appToStart);
+        if (modeList.contains(MyEnum.WIFI_ON))
+            HookUtils.enableWifi(context, true);
+        if (modeList.contains(MyEnum.WIFI_OFF))
+            HookUtils.enableWifi(context, false);
+    }
+
 
     //Custom Action Methods
     public static void enableAirplane(int enable){
@@ -107,7 +191,8 @@ public final class HookUtils { //final because the class should be handled like 
             Log.e("CustomAlertSlider", "Error setting to 2g", ex);
         }
     }
-    public static void startApp(Context context, int position){
+    public static void startApp(Context context, String appToStart){
+        /*
         String packagename = null;
         if (position == 1)
             packagename = new RemotePreferences(AndroidAppHelper.currentApplication(), "com.dev.weathon.customalertslider", "com.dev.weathon.customalertslider_preferences").getString("topPosition_app", null);
@@ -115,9 +200,9 @@ public final class HookUtils { //final because the class should be handled like 
             packagename = new RemotePreferences(AndroidAppHelper.currentApplication(), "com.dev.weathon.customalertslider", "com.dev.weathon.customalertslider_preferences").getString("midPosition_app", null);
         else if (position == 3)
             packagename = new RemotePreferences(AndroidAppHelper.currentApplication(), "com.dev.weathon.customalertslider", "com.dev.weathon.customalertslider_preferences").getString("botPosition_app", null);
-
-        if (packagename != null){
-            Intent i = context.getPackageManager().getLaunchIntentForPackage(packagename);
+*/
+        if (appToStart != null){
+            Intent i = context.getPackageManager().getLaunchIntentForPackage(appToStart);
             context.startActivity(i);
         }
     }
@@ -156,5 +241,20 @@ public final class HookUtils { //final because the class should be handled like 
 
         return false;
     }*/
+
+    public static final String AllNotificationHardwareVal = "603";
+    public static final String PriorityHardwareVal = "602";
+    public static final String TotalSilenceHardwareVal = "600";
+    public static final String AlarmsOnlyHardwareVal = "601";
+
+    public static final int TotalSilenceZenValOxygen = 1;
+    public static final int PriorityZenValOxygen = 2;
+    public static final int AllNotificationZenValOxygen = 3;
+
+
+    public static final int AllNotificationZenVal = 0;
+    public static final int PriorityZenVal = 1;
+    public static final int TotalSilenceZenVal = 2;
+    public static final int AlarmsOnlyZenVal = 3;
 }
 

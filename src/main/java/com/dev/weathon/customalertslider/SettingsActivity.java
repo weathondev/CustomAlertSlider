@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.PersistableBundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.MultiSelectListPreference;
@@ -39,18 +40,27 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.PopupWindow;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
+
+import de.robv.android.xposed.XposedBridge;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -67,8 +77,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
 
     public static Preference startAppPreference;
-    private static Preference prefScreenNotificationSlider;
-    private static Preference prefScreenCustomSlider;
+
+    private static Preference hideNotificationToasts;
+    private static Preference prefScreenExtendedVolumeControl;
+
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -93,6 +106,19 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 if (preference.getKey().equals("language")){
                     if (!value.toString().equals(preference.getContext().getSharedPreferences("com.dev.weathon.customalertslider_preferences", MODE_PRIVATE).getString("language", "system"))){
                         ((Activity)preference.getContext()).recreate();
+                    }
+                }
+                else if (preference.getKey().equals("usedOS")){
+                    SharedPreferences prefs = preference.getContext().getSharedPreferences("bootPreferences", MODE_WORLD_READABLE);
+                    prefs.edit().putString(preference.getKey(), value.toString()).apply();
+
+                    if (value.toString().equals("oxygen")){
+                        prefScreenExtendedVolumeControl.setEnabled(true);
+                        hideNotificationToasts.setEnabled(true);
+                    }
+                    else if (value.toString().equals("cyanogen")){
+                        prefScreenExtendedVolumeControl.setEnabled(false);
+                        hideNotificationToasts.setEnabled(false);
                     }
                 }
                 /*
@@ -166,14 +192,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     private static Preference.OnPreferenceChangeListener onPreferenceChangeListenerCheckBox = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
-            if (preference.getKey().equals("reverseSlider") && (boolean) value){
+            /*if (preference.getKey().equals("reverseSlider") && (boolean) value){
                 AlertDialog.Builder dialog = new AlertDialog.Builder(preference.getContext());
                 dialog.setTitle(preference.getContext().getResources().getString(R.string.AlertDialogTitle));
                 dialog.setMessage(preference.getContext().getResources().getString(R.string.AlertDialogMessage));
                 dialog.setNeutralButton("OK", null);
                 dialog.create().show();
-            }
-            else if (preference.getKey().equals("showIcon")){
+            }*/
+            if (preference.getKey().equals("showIcon")){
                 boolean b = (boolean) value;
                 Log.v("CustomAlertSlider", "show icon is " + b);
                 PackageManager pm = preference.getContext().getPackageManager();
@@ -181,36 +207,24 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         new ComponentName(preference.getContext(), "com.dev.weathon.customalertslider.show_ic"), b ? PackageManager.COMPONENT_ENABLED_STATE_DISABLED: PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                         PackageManager.DONT_KILL_APP);
             }
-            else if (preference.getKey().equals("vibrateInsteadPriority") || preference.getKey().equals("extremeCustomization")){
+            else if (preference.getKey().equals("vibrateInsteadPriority")){
                 SharedPreferences prefs = preference.getContext().getSharedPreferences("bootPreferences", MODE_WORLD_READABLE);
                 prefs.edit().putBoolean(preference.getKey(), (boolean)value).apply();
 
-                if (preference.getKey().equals("extremeCustomization")){
-                    if ((boolean)value){
-                        prefScreenNotificationSlider.setEnabled(false);
-                        prefScreenCustomSlider.setEnabled(true);
-                    }
-                    else{
-                        prefScreenNotificationSlider.setEnabled(true);
-                        prefScreenCustomSlider.setEnabled(false);
-                    }
-                }
-                else if(preference.getKey().equals("vibrateInsteadPriority") && (boolean) value){
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(preference.getContext());
-                    dialog.setTitle(preference.getContext().getResources().getString(R.string.AlertDialogTitle));
-                    dialog.setMessage(preference.getContext().getResources().getString(R.string.AlertDialogMessage_VibrateMode));
-                    dialog.setNeutralButton(preference.getContext().getResources().getString(R.string.Ok), null);
-                    dialog.setPositiveButton(preference.getContext().getResources().getString(R.string.GoToPrioritySettings), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            Activity currentActivity = getActivity();
-                            if (currentActivity != null) {
-                                currentActivity.startActivity(new Intent("android.settings.ZEN_MODE_PRIORITY_SETTINGS"));
-                            }
+                AlertDialog.Builder dialog = new AlertDialog.Builder(preference.getContext());
+                dialog.setTitle(preference.getContext().getResources().getString(R.string.AlertDialogTitle));
+                dialog.setMessage(preference.getContext().getResources().getString(R.string.AlertDialogMessage_VibrateMode));
+                dialog.setNeutralButton(preference.getContext().getResources().getString(R.string.Ok), null);
+                dialog.setPositiveButton(preference.getContext().getResources().getString(R.string.GoToPrioritySettings), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Activity currentActivity = getActivity();
+                        if (currentActivity != null) {
+                            currentActivity.startActivity(new Intent("android.settings.ZEN_MODE_PRIORITY_SETTINGS"));
                         }
-                    });
-                    dialog.create().show();
-                }
+                    }
+                });
+                dialog.create().show();
             }
             else if (preference.getKey().equals("vibrateModeText")){
                 SharedPreferences prefs = preference.getContext().getSharedPreferences("bootPreferences", MODE_WORLD_READABLE);
@@ -371,11 +385,91 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 .commit();
 
         //updateResources(this, settings.getString("language", "system"));
-
-
     }
 
-    /**
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences settings  = getSharedPreferences("com.dev.weathon.customalertslider_preferences", MODE_PRIVATE);
+        if(settings.getString("usedOS", "oxygen").equals("cyanogen"))
+            readSliderConfiguration(settings);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences settings  = getSharedPreferences("com.dev.weathon.customalertslider_preferences", MODE_PRIVATE);
+        if(settings.getString("usedOS", "oxygen").equals("cyanogen"))
+            readSliderConfiguration(settings);
+    }
+
+    private void readSliderConfiguration(SharedPreferences settings){
+        final String NOTIF_SLIDER_TOP_NODE = "/proc/tri-state-key/keyCode_top";
+        final String NOTIF_SLIDER_MIDDLE_NODE = "/proc/tri-state-key/keyCode_middle";
+        final String NOTIF_SLIDER_BOTTOM_NODE = "/proc/tri-state-key/keyCode_bottom";
+
+        Map<String, Integer> zenValueMapping = new HashMap<String, Integer>();
+        zenValueMapping.put(HookUtils.AllNotificationHardwareVal, HookUtils.AllNotificationZenVal);
+        zenValueMapping.put(HookUtils.PriorityHardwareVal, HookUtils.PriorityZenVal);
+        zenValueMapping.put(HookUtils.TotalSilenceHardwareVal, HookUtils.TotalSilenceZenVal);
+        zenValueMapping.put(HookUtils.AlarmsOnlyHardwareVal, HookUtils.AlarmsOnlyZenVal);
+
+        readRootFile(NOTIF_SLIDER_TOP_NODE, "SliderIsOnTop", zenValueMapping, settings);
+        readRootFile(NOTIF_SLIDER_MIDDLE_NODE, "SliderIsOnMid", zenValueMapping, settings);
+        readRootFile(NOTIF_SLIDER_BOTTOM_NODE, "SliderIsOnBot", zenValueMapping, settings);
+    }
+
+    private void readRootFile(String filePath, String preference, Map<String, Integer> zenValueMapping, SharedPreferences settings) {
+        String retVal = null;
+        String content = "";
+        try {
+            Process process = Runtime.getRuntime().exec("su");
+            InputStream in = process.getInputStream();
+            OutputStream out = process.getOutputStream();
+            String cmd = "cat " + filePath;
+            out.write(cmd.getBytes());
+            out.flush();
+            out.close();
+
+            Scanner s = new Scanner(in).useDelimiter("\\A");
+            content = s.hasNext() ? s.next() : "";
+            //Wait until reading finishes
+            process.waitFor();
+        } catch (IOException e) {
+            Log.e("CustomAlertSlider", "IOException, " + e.getMessage());
+        } catch (InterruptedException e) {
+            Log.e("CustomAlertSlider", "InterruptedException, " + e.getMessage());
+        }
+
+        //int i = Integer.parseInt(content);
+
+
+        Log.w("CustomAlertSlider", "content: " + content + " utilshardwareallnotific" + HookUtils.AllNotificationHardwareVal);
+
+
+        int zenValue = 0;
+        if (content.contains(HookUtils.AllNotificationHardwareVal))
+            zenValue = HookUtils.AllNotificationZenVal;
+        else if (content.contains(HookUtils.PriorityHardwareVal))
+            zenValue = HookUtils.PriorityZenVal;
+        else if (content.contains(HookUtils.AlarmsOnlyHardwareVal))
+            zenValue = HookUtils.AlarmsOnlyZenVal;
+        else if (content.contains(HookUtils.TotalSilenceHardwareVal))
+            zenValue = HookUtils.TotalSilenceZenVal;
+
+        Log.w("CustomAlertSlider", "save " + preference + " " + zenValue);
+        settings.edit().putInt(preference, zenValue).apply();
+
+        //Do your stuff here with "content" string
+        //The "content" String has the content of readed file
+        /*} catch (IOException e) {
+            Log.e("CustomAlertSlider", "IOException, " + e.getMessage());
+        } catch (InterruptedException e) {
+            Log.e("CustomAlertSlider", "InterruptedException, " + e.getMessage());
+        }*/
+    }
+
+        /**
      * {@inheritDoc}
      */
     @Override
@@ -406,20 +500,22 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
 
+            //save to static to enable/disable PreferenceScreens
+            hideNotificationToasts = findPreference("hideToast");
+            prefScreenExtendedVolumeControl = findPreference("prefScreenExtendedVolumeControl");
+
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
 
             //bindPreferenceSummaryToValue(findPreference("language"));
-
+            bindPreferenceSummaryToValue(findPreference("usedOS"));
 
             //bindsummary for multilistPreferences
             bindPreferenceSummaryToValueForMultiList(findPreference("topPosition"));
             bindPreferenceSummaryToValueForMultiList(findPreference("midPosition"));
             bindPreferenceSummaryToValueForMultiList(findPreference("botPosition"));
-
-
 
             //bindsummary for TextPreferences
             bindPreferenceSummaryToValue(findPreference("extendedVolumeControlAllNotText"));
@@ -428,26 +524,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             //do stuff for SwitchPreferences-Value Change
             bindPreferenceBooleanValueAlert(findPreference("vibrateModeText"));
-            bindPreferenceBooleanValueAlert(findPreference("reverseSlider"));
             bindPreferenceBooleanValueAlert(findPreference("showIcon"));
             bindPreferenceBooleanValueAlert(findPreference("vibrateInsteadPriority"));
-            bindPreferenceBooleanValueAlert(findPreference("extremeCustomization"));
 
             //do stuff when preference get clicked
             bindPreferenceOnClick(findPreference("donate"));
-
-            //save to static to enable/disable PreferenceScreens
-            prefScreenNotificationSlider = findPreference("prefScreenNotificationSlider");
-            prefScreenCustomSlider = findPreference("prefScreenCustomSlider");
-
-            if (((SwitchPreference)findPreference("extremeCustomization")).isChecked()){
-                prefScreenNotificationSlider.setEnabled(false);
-                prefScreenCustomSlider.setEnabled(true);
-            }
-            else{
-                prefScreenNotificationSlider.setEnabled(true);
-                prefScreenCustomSlider.setEnabled(false);
-            }
         }
     }
 
