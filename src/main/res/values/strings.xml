@@ -48,9 +48,11 @@
         <item>GPS [OFF]</item>
         <item>Mobile Data [ON]</item>
         <item>Mobile Data [OFF]</item>
-        <item>Preferred Network 2G</item>
-        <item>Preferred Network 3G</item>
-        <item>Preferred Network 4G</item>
+        <item>Preferred Network [2G]</item>
+        <item>Preferred Network [3G]</item>
+        <item>Preferred Network [4G]</item>
+        <item>Screen Orientation [AUTO]</item>
+        <item>Screen Orientation [PORTRAIT]</item>
         <item>@string/startappstring</item>
         <item>Wifi [ON]</item>
         <item>Wifi [OFF]</item>
@@ -75,6 +77,8 @@
         <item>PREFER_NETWORK_2G</item>
         <item>PREFER_NETWORK_3G</item>
         <item>PREFER_NETWORK_4G</item>
+        <item>SCREEN_ORIENTATION_AUTO</item>
+        <item>SCREEN_ORIENTATION_PORTRAIT</item>
         <item>STARTAPP</item>
         <item>WIFI_ON</item>
         <item>WIFI_OFF</item>
@@ -101,6 +105,8 @@
         <item>PREFER_NETWORK_2G</item>
         <item>PREFER_NETWORK_3G</item>
         <item>PREFER_NETWORK_4G</item>
+        <item>SCREEN_ORIENTATION_AUTO</item>
+        <item>SCREEN_ORIENTATION_PORTRAIT</item>
         <item>STARTAPP</item>
         <item>WIFI_ON</item>
         <item>WIFI_OFF</item>
@@ -127,6 +133,8 @@
         <item>PREFER_NETWORK_2G</item>
         <item>PREFER_NETWORK_3G</item>
         <item>PREFER_NETWORK_4G</item>
+        <item>SCREEN_ORIENTATION_AUTO</item>
+        <item>SCREEN_ORIENTATION_PORTRAIT</item>
         <item>STARTAPP</item>
         <item>WIFI_ON</item>
         <item>WIFI_OFF</item>

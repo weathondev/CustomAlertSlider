@@ -53,7 +53,9 @@ public final class HookUtils { //final because the class should be handled like 
         ALL_NOTIFICATIONS(19),
         PRIORITY(20),
         ALARMS_ONLY(21),
-        TOTAL_SILENCE(22);
+        TOTAL_SILENCE(22),
+        SCREEN_ORIENTATION_AUTO(25),
+        SCREEN_ORIENTATION_PORTRAIT(26);
 
         private final int value;
 
@@ -69,9 +71,9 @@ public final class HookUtils { //final because the class should be handled like 
     //Activate Custom States
     public static void activateStates(Context context, ArrayList<MyEnum> modeList, String appToStart){
         if (modeList.contains(MyEnum.AIRPLANE_ON))
-            HookUtils.enableAirplane(1);
+            HookUtils.enableAirplane(true);
         if (modeList.contains(MyEnum.AIRPLANE_OFF))
-            HookUtils.enableAirplane(0);
+            HookUtils.enableAirplane(false);
         if (modeList.contains(MyEnum.BLUETOOTH_ON))
             HookUtils.enableBluetooth(true);
         if (modeList.contains(MyEnum.BLUETOOTH_OFF))
@@ -104,27 +106,23 @@ public final class HookUtils { //final because the class should be handled like 
             HookUtils.enableWifi(context, true);
         if (modeList.contains(MyEnum.WIFI_OFF))
             HookUtils.enableWifi(context, false);
+        if (modeList.contains(MyEnum.SCREEN_ORIENTATION_AUTO))
+            HookUtils.enableAutoScreenRotation(true);
+        if (modeList.contains(MyEnum.SCREEN_ORIENTATION_PORTRAIT))
+            HookUtils.enableAutoScreenRotation(false);
     }
 
 
     //Custom Action Methods
-    public static void enableAirplane(int enable){
-        //boolean enable = Settings.Global.getInt(AndroidAppHelper.currentApplication().getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, 0) == 1;
-        //Settings.Global.putInt(AndroidAppHelper.currentApplication().getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, enable ? 0 : 1);
-        Settings.Global.putInt(AndroidAppHelper.currentApplication().getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, enable);
+    public static void enableAirplane(boolean enable){
+        Settings.Global.putInt(AndroidAppHelper.currentApplication().getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, enable ? 1 : 0);
         Intent intentAirplane = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-        //intentAirplane.putExtra("state", enable ? 0 : 1);
-        intentAirplane.putExtra("state", enable);
+        intentAirplane.putExtra("state", enable ? 1 : 0);
         AndroidAppHelper.currentApplication().sendBroadcast(intentAirplane);
     }
     @SuppressWarnings("MissingPermission")
     public static void enableBluetooth(boolean enable){
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-        /*
-        if (adapter.isEnabled())
-            adapter.disable();
-        else
-            adapter.enable();*/
         if(enable)
             adapter.enable();
         else
@@ -144,16 +142,6 @@ public final class HookUtils { //final because the class should be handled like 
         }
     }
     public static void setGPS(Context context, int mode) {
-        /*
-        //Get GPS now state (open or closed)
-        boolean gpsEnabled = Settings.Secure.isLocationProviderEnabled(context.getContentResolver(), LocationManager.GPS_PROVIDER);
-
-        if (gpsEnabled) {
-            Settings.Secure.putInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE, 0);
-        } else {
-            Settings.Secure.putInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE, 3);
-        }*/
-
         Settings.Secure.putInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE, mode);
     }
     public static void enableMobileData(Context context, boolean enable) {
@@ -192,15 +180,6 @@ public final class HookUtils { //final because the class should be handled like 
         }
     }
     public static void startApp(Context context, String appToStart){
-        /*
-        String packagename = null;
-        if (position == 1)
-            packagename = new RemotePreferences(AndroidAppHelper.currentApplication(), "com.dev.weathon.customalertslider", "com.dev.weathon.customalertslider_preferences").getString("topPosition_app", null);
-        else if (position == 2)
-            packagename = new RemotePreferences(AndroidAppHelper.currentApplication(), "com.dev.weathon.customalertslider", "com.dev.weathon.customalertslider_preferences").getString("midPosition_app", null);
-        else if (position == 3)
-            packagename = new RemotePreferences(AndroidAppHelper.currentApplication(), "com.dev.weathon.customalertslider", "com.dev.weathon.customalertslider_preferences").getString("botPosition_app", null);
-*/
         if (appToStart != null){
             Intent i = context.getPackageManager().getLaunchIntentForPackage(appToStart);
             context.startActivity(i);
@@ -217,30 +196,10 @@ public final class HookUtils { //final because the class should be handled like 
 
         wifiManager.setWifiEnabled(enable);
     }
+    public static void enableAutoScreenRotation(boolean enable){
+        Settings.System.putInt(AndroidAppHelper.currentApplication().getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, enable ? 1 : 0);
 
-
-
-    /*private static boolean getMobileDataState(Context context) {
-        try
-        {
-            TelephonyManager telephonyService = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
-
-            Method getMobileDataEnabledMethod = telephonyService.getClass().getDeclaredMethod("getDataEnabled");
-
-            if (null != getMobileDataEnabledMethod)
-            {
-                boolean mobileDataEnabled = (Boolean) getMobileDataEnabledMethod.invoke(telephonyService);
-
-                return mobileDataEnabled;
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.e("CustomAlertSlider", "Error getting mobile data state", ex);
-        }
-
-        return false;
-    }*/
+    }
 
     public static final String AllNotificationHardwareVal = "603";
     public static final String PriorityHardwareVal = "602";
