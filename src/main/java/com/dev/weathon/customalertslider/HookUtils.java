@@ -54,8 +54,8 @@ public final class HookUtils { //final because the class should be handled like 
         PRIORITY(20),
         ALARMS_ONLY(21),
         TOTAL_SILENCE(22),
-        SCREEN_ORIENTATION_AUTO(25),
-        SCREEN_ORIENTATION_PORTRAIT(26);
+        SCREEN_ORIENTATION_AUTO(23),
+        SCREEN_ORIENTATION_PORTRAIT(24);
 
         private final int value;
 
