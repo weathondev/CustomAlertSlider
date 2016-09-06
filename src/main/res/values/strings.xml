@@ -210,4 +210,8 @@
     <string name="pref_title_usedOS">Operating System</string>
     <string name="pref_donate_summary">Saving for a new Screen Protector :)</string>
     <string name="pref_category_position_mapping_header">Slider Position Mapping</string>
+
+
+    <string name="pref_title_headPhoneMode">Headphone Mode</string>
+    <string name="pref_summary_headPhoneMode">When the Headphone Mode is activated, the notification volume will be set to 0 (vibrate), when headphones are connected.</string>
 </resources>

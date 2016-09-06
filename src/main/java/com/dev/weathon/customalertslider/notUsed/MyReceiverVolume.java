@@ -1,12 +1,18 @@
 package com.dev.weathon.customalertslider.notUsed;
 
+import android.Manifest;
 import android.app.AndroidAppHelper;
 import android.app.NotificationManager;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.crossbowffs.remotepreferences.RemotePreferences;
@@ -19,65 +25,99 @@ import de.robv.android.xposed.XposedBridge;
 /**
  * Created by Joshua on 05.08.2016.
  */
-public class MyReceiverVolume extends BroadcastReceiver{
+public class MyReceiverVolume extends BroadcastReceiver
+{
+    private static MyReceiverVolume instance;
+    private int previousVol;
 
 
-    public static final String EXTRA_VOLUME_STREAM_TYPE = "android.media.EXTRA_VOLUME_STREAM_TYPE";
-    public static final String EXTRA_VOLUME_STREAM_VALUE = "android.media.EXTRA_VOLUME_STREAM_VALUE";
-    public static final String EXTRA_PREV_VOLUME_STREAM_VALUE = "android.media.EXTRA_PREV_VOLUME_STREAM_VALUE";
+    private MyReceiverVolume()
+    {
+    }
 
-    public static final int STREAM_DEFAULT = -1;
-    public static final int STREAM_VOICE_CALL = 0;
-    public static final int STREAM_SYSTEM = 1;
-    public static final int STREAM_RING = 2;
-    public static final int STREAM_MUSIC = 3;
-    public static final int STREAM_ALARM = 4;
-    public static final int STREAM_NOTIFICATION = 5;
-    public static final int STREAM_BLUETOOTH_SCO = 6;
-    public static final int STREAM_SYSTEM_ENFORCED = 7;
-    public static final int STREAM_DTMF = 8;
-    public static final int STREAM_TTS = 9;
+    /**
+     * Get the MyReceiverVolume singleton.
+     */
+    public static MyReceiverVolume getInstance()
+    {
+        if(instance == null)
+        {
+            instance = new MyReceiverVolume();
+        }
+        return instance;
+    }
+
+    /**
+     * Tell the receiver to ignore its next broadcast.
+
+    public void setIgnoreNext()
+    {
+        ignoreNext = true;
+    }
+*/
+    private int processIntent(Context context, Intent intent, boolean btEnabled)
+    {
+        int state = -1;
+        if(intent.getAction().equals(Intent.ACTION_HEADSET_PLUG))
+        {
+            state = intent.getIntExtra("state", -1);
+        }
+        else
+        {
+            // it's a bluetooth broadcast.
+            if(btEnabled)
+            {
+                BluetoothDevice device = (BluetoothDevice)intent.getExtras().get(
+                        BluetoothDevice.EXTRA_DEVICE);
+                BluetoothClass btClass = device.getBluetoothClass();
+                int classId = btClass.getMajorDeviceClass();
+                if(classId == BluetoothClass.Device.Major.AUDIO_VIDEO)
+                {
+                    if(intent.getAction().equals(BluetoothDevice.ACTION_ACL_CONNECTED))
+                    {
+                        state = 1;
+                    }
+                    else if(intent.getAction().equals(
+                            BluetoothDevice.ACTION_ACL_DISCONNECTED))
+                    {
+                        state = 0;
+                    }
+                }
+            }
+        }
+        return state;
+    }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
-/*
+    public void onReceive(Context context, Intent intent)
+    {
+        /*int permissionCheck = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.BLUETOOTH);
 
-        final int stream = intent.getIntExtra(EXTRA_VOLUME_STREAM_TYPE, -1);
-        final int level = intent.getIntExtra(EXTRA_VOLUME_STREAM_VALUE, -1);
-        final int oldLevel = intent.getIntExtra(EXTRA_PREV_VOLUME_STREAM_VALUE, -1);
-
-        if (stream == AudioManager.STREAM_NOTIFICATION){
-            AudioManager mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-
-
-            Log.e("CustomAlertSlider","onReceive VOLUME_CHANGED_ACTION stream=" + stream
-                    + " level=" + level + " oldLevel=" + oldLevel + " ringermode: " + mAudioManager.getRingerMode());
-        }
-
-
-
-        SharedPreferences settings = new RemotePreferences(context,"com.dev.weathon.customalertslider", "com.dev.weathon.customalertslider_preferences");
-        if (!settings.getBoolean("extremeCustomization", false) && settings.getBoolean("vibrateInsteadPriority", false)) {
-            if (stream == AudioManager.STREAM_NOTIFICATION){
-                try {
-                    NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    Method getZenMode = nm.getClass().getDeclaredMethod("getZenMode");
-                    if ((int)getZenMode.invoke(nm) == 2 && level != 0){
-                        Log.e("CustomAlertSlider", "setSoundTo0");
-                        AudioManager mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                        mAudioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, 0);
-                    }
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED){*/
+            boolean bluetoothEnabled = false;
+            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (mBluetoothAdapter == null) {
+                // Device does not support Bluetooth
+            } else {
+                if (mBluetoothAdapter.isEnabled()) {
+                    bluetoothEnabled = true;
                 }
             }
 
-        }
-        */
-    }
+            int state = processIntent(context, intent, bluetoothEnabled);
+            Log.e("CustomAlertSlider", "received intent " + intent.toString() + " state:" + state);
 
+            AudioManager mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            if (state == 1){
+                previousVol = mAudioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+                if (previousVol != 0)
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, 0);
+            }
+            else{
+                if (previousVol != 0)
+                    mAudioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, previousVol, 0);
+            }
+        //}
+    }
 }

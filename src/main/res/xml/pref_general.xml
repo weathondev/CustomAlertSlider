@@ -82,6 +82,12 @@
         android:title="@string/pref_title_hide_toasts"
         android:summary="@string/pref_summary_hide_toasts"/>
 
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="headPhoneMode"
+        android:title="@string/pref_title_headPhoneMode"
+        android:summary="@string/pref_summary_headPhoneMode"/>
+
     <PreferenceScreen
         android:title="@string/pref_extendedVolumeControl"
         android:key="prefScreenExtendedVolumeControl"

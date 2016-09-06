@@ -1,6 +1,7 @@
 package com.dev.weathon.customalertslider;
 
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AndroidAppHelper;
@@ -28,6 +29,8 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -80,6 +83,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
     private static Preference hideNotificationToasts;
     private static Preference prefScreenExtendedVolumeControl;
+
+    private static int MY_PERMISSIONS_REQUEST_BLUETOOTH;
 
 
     /**
@@ -231,6 +236,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 prefs.edit().putString(preference.getKey(), value.toString()).apply();
                 preference.setSummary(value.toString());
             }
+            /*else if (preference.getKey().equals("headPhoneMode")){
+                boolean b = (boolean) value;
+                if (b){
+                    if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.BLUETOOTH},  MY_PERMISSIONS_REQUEST_BLUETOOTH);
+                    }
+                }
+            }*/
 
             return true;
         }
@@ -526,6 +539,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceBooleanValueAlert(findPreference("vibrateModeText"));
             bindPreferenceBooleanValueAlert(findPreference("showIcon"));
             bindPreferenceBooleanValueAlert(findPreference("vibrateInsteadPriority"));
+            //bindPreferenceBooleanValueAlert(findPreference("headPhoneMode"));
 
             //do stuff when preference get clicked
             bindPreferenceOnClick(findPreference("donate"));

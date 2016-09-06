@@ -6,6 +6,8 @@
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+
 
     <application
         android:allowBackup="true"
@@ -23,20 +25,6 @@
             android:name="xposedminversion"
             android:value="82" />
 
-        <receiver android:name=".notUsed.MyReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".notUsed.MyReceiverVolume">
-            <intent-filter>
-                <action android:name="android.media.VOLUME_CHANGED_ACTION" />
-            </intent-filter>
-        </receiver>
-
-        <service
-            android:name=".notUsed.MyService"
-            android:exported="false" />
 
         <activity
             android:name=".SettingsActivity"
@@ -66,6 +54,16 @@
             android:name=".MyPreferenceProvider"
             android:authorities="com.dev.weathon.customalertslider"
             android:exported="true" />
+
+
+
+        <receiver android:name=".notUsed.BootCompletedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service android:enabled="true" android:name=".notUsed.MyService" />
 
     </application>
 
