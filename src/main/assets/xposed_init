@@ -1,8 +1,9 @@
-com.dev.weathon.customalertslider.hooks.HookZenToast
+com.dev.weathon.customalertslider.hooks.oxygen.HookZenToast
 com.dev.weathon.customalertslider.hooks.HookReplaceDndIconAndText
 com.dev.weathon.customalertslider.hooks.HookComingFromBoot
-com.dev.weathon.customalertslider.hooks.HookReverseSliderAtBoot
-com.dev.weathon.customalertslider.hooks.HookZenModeChange
-com.dev.weathon.customalertslider.hooks.HookRemoveDndIcon
-com.dev.weathon.customalertslider.hooks.HookRestrictVibrateVolume
-com.dev.weathon.customalertslider.hooks.HookZenFooter
+com.dev.weathon.customalertslider.hooks.oxygen.HookReverseSliderAtBoot
+com.dev.weathon.customalertslider.hooks.oxygen.HookZenModeChange
+com.dev.weathon.customalertslider.hooks.HookRemoveDndIconFromStatusBar
+com.dev.weathon.customalertslider.hooks.oxygen.HookExtendedVolumeControlLayout
+com.dev.weathon.customalertslider.hooks.oxygen.HookExtendedVolumeControlZenFooter
+com.dev.weathon.customalertslider.hooks.cyanogen.HookZenModeChangeCyanogen

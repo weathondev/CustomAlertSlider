@@ -7,18 +7,49 @@
 
 
 
+
 <PreferenceCategory
     android:title="@string/pref_category_main_header">
-    <PreferenceScreen
-        android:title="@string/pref_header_notslider"
-        android:key="prefScreenNotificationSlider"
-        android:summary="@string/notificationSlider_screen">
+    <Preference
+        android:title="@string/pref_donate_title"
+        android:key="donate"
+        android:summary="@string/pref_donate_summary"/>
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="reverseSlider"
-            android:title="@string/pref_title_reverseSlider"
-            android:summary="@string/pref_summary_reverseSlider" />
+    <ListPreference
+        android:defaultValue="oxygen"
+        android:key="usedOS"
+        android:title="@string/pref_title_usedOS"
+        android:entries="@array/pref_list_titles_usedOS"
+        android:entryValues="@array/pref_list_values_usedOS" />
+</PreferenceCategory>
+<PreferenceCategory
+        android:title="@string/pref_category_position_mapping_header">
+
+    <com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer
+        android:title="@string/pref_title_topPosition"
+        android:key="topPosition"
+        android:entries="@array/pref_sliderposition_list_titles"
+        android:entryValues="@array/pref_topPosition_list_values">
+    </com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer>
+
+    <com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer
+        android:title="@string/pref_title_midPosition"
+        android:key="midPosition"
+        android:entries="@array/pref_sliderposition_list_titles"
+        android:entryValues="@array/pref_midPosition_list_values">
+    </com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer>
+
+    <com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer
+        android:title="@string/pref_title_botPosition"
+        android:key="botPosition"
+        android:entries="@array/pref_sliderposition_list_titles"
+        android:entryValues="@array/pref_botPosition_list_values">
+    </com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer>
+
+    <PreferenceScreen
+        android:title="@string/pref_title_vibrateInsteadPriority"
+        android:key="prefScreenVibrateInsteadPriority"
+        android:summary="@string/pref_summary_vibrateInsteadPriority">
 
         <SwitchPreference
             android:defaultValue="false"
@@ -40,41 +71,26 @@
             android:summary="@string/pref_summary_silentMedia_inVibrate"
             android:dependency="vibrateInsteadPriority"/>
     </PreferenceScreen>
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="extremeCustomization"
-        android:title="@string/pref_title_extremeCustomization"
-        android:summary="@string/pref_summary_extremeCustomization"/>
+</PreferenceCategory>
+
+<PreferenceCategory
+    android:title="@string/pref_header_advanced">
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hideToast"
+        android:title="@string/pref_title_hide_toasts"
+        android:summary="@string/pref_summary_hide_toasts"/>
+
     <PreferenceScreen
-        android:title="@string/pref_header_cusslider"
-        android:key="prefScreenCustomSlider"
-        android:summary="@string/customSlider_screen">
-
-        <com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer
-            android:title="@string/pref_title_topPosition"
-            android:key="topPosition"
-            android:entries="@array/pref_sliderposition_list_titles"
-            android:entryValues="@array/pref_topPosition_list_values">
-        </com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer>
-
-        <com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer
-            android:title="@string/pref_title_midPosition"
-            android:key="midPosition"
-            android:entries="@array/pref_sliderposition_list_titles"
-            android:entryValues="@array/pref_midPosition_list_values">
-        </com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer>
-
-        <com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer
-            android:title="@string/pref_title_botPosition"
-            android:key="botPosition"
-            android:entries="@array/pref_sliderposition_list_titles"
-            android:entryValues="@array/pref_botPosition_list_values">
-        </com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer>
+        android:title="@string/pref_extendedVolumeControl"
+        android:key="prefScreenExtendedVolumeControl"
+        android:summary="@string/pref_extendedVolumeControl_summary">
 
         <SwitchPreference
             android:title="@string/pref_extendedVolumeControl"
             android:key="extendedZenModeControl"
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:summary="@string/pref_extendedVolumeControl_summary"/>
 
         <EditTextPreference
@@ -96,27 +112,18 @@
             android:dependency="extendedZenModeControl">
         </EditTextPreference>
     </PreferenceScreen>
-</PreferenceCategory>
 
-<PreferenceCategory
-    android:title="@string/pref_header_general">
-
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="hideToast"
-        android:title="@string/pref_title_hide_toasts"
-        android:summary="@string/pref_summary_hide_toasts"/>
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="showIcon"
         android:title="@string/pref_title_show_icon"
         android:summary="@string/pref_summary_show_icon"/>
-
-    <Preference
-        android:title="@string/pref_donate_title"
-        android:key="donate" />
 </PreferenceCategory>
-        <!--
+
+
+
+
+    <!--
         <ListPreference
             android:defaultValue="system"
             android:title="@string/pref_title_language"

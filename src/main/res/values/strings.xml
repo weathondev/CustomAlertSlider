@@ -6,14 +6,10 @@
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
+    <string name="pref_header_advanced">Advanced</string>
 
     <string name="pref_header_notslider">Notification Slider</string>
 
-    <string name="pref_header_cusslider">Custom Slider</string>
-
-    <string name="pref_title_extremeCustomization">Extreme customization</string>
-    <string name="pref_summary_extremeCustomization">Custom actions on slider change.</string>
 
     <string name="pref_title_hide_toasts">Hide Notification Toasts</string>
     <string name="pref_summary_hide_toasts">Hide the notification toasts that appear, when switching the sliders position.</string>
@@ -21,8 +17,6 @@
     <string name="pref_title_show_icon">Hide App Icon in Launcher</string>
     <string name="pref_summary_show_icon">Hides the app icon in the launcher. You need to restart your phone/launcher to activate the change. The app is still accessible from Xposed.</string>
 
-    <string name="pref_title_reverseSlider">Reverse Slider</string>
-    <string name="pref_summary_reverseSlider">The top and the bottom position is switched.</string>
 
     <string name="pref_title_vibrateInsteadPriority">Vibrate instead of Priority</string>
     <string name="pref_summary_vibrateInsteadPriority">Replaces the priority mode with a vibrate mode.</string>
@@ -38,6 +32,10 @@
     <string name="noAction">No Action</string>
 
     <string-array name="pref_sliderposition_list_titles">
+        <item>All Notifications</item>
+        <item>Priority/Vibrate</item>
+        <item>Alarms Only</item>
+        <item>Total Silence</item>
         <item>Airplane mode [ON]</item>
         <item>Airplane mode [OFF]</item>
         <item>Bluetooth [ON]</item>
@@ -58,6 +56,10 @@
         <item>Wifi [OFF]</item>
     </string-array>
     <string-array name="pref_topPosition_list_values">
+        <item>ALL_NOTIFICATIONS</item>
+        <item>PRIORITY</item>
+        <item>ALARMS_ONLY</item>
+        <item>TOTAL_SILENCE</item>
         <item>AIRPLANE_ON</item>
         <item>AIRPLANE_OFF</item>
         <item>BLUETOOTH_ON</item>
@@ -80,6 +82,10 @@
 
     <string name="pref_title_midPosition">Middle Slider Position</string>
     <string-array name="pref_midPosition_list_values">
+        <item>ALL_NOTIFICATIONS</item>
+        <item>PRIORITY</item>
+        <item>ALARMS_ONLY</item>
+        <item>TOTAL_SILENCE</item>
         <item>AIRPLANE_ON</item>
         <item>AIRPLANE_OFF</item>
         <item>BLUETOOTH_ON</item>
@@ -102,6 +108,10 @@
 
     <string name="pref_title_botPosition">Bottom Slider Position</string>
     <string-array name="pref_botPosition_list_values">
+        <item>ALL_NOTIFICATIONS</item>
+        <item>PRIORITY</item>
+        <item>ALARMS_ONLY</item>
+        <item>TOTAL_SILENCE</item>
         <item>AIRPLANE_ON</item>
         <item>AIRPLANE_OFF</item>
         <item>BLUETOOTH_ON</item>
@@ -179,4 +189,17 @@
     <string name="extendedVolumeControlAllNotText">ALL</string>
     <string name="pref_title_extendedVolumeControlAllNotText">Extended Volume Control All Text</string>
 
+
+    <string-array name="pref_list_values_usedOS">
+        <item>oxygen</item>
+        <item>cyanogen</item>
+    </string-array>
+    <string-array name="pref_list_titles_usedOS">
+        <item>Oxygen OS</item>
+        <item>CyanogenMod based</item>
+    </string-array>
+
+    <string name="pref_title_usedOS">Operating System</string>
+    <string name="pref_donate_summary">Saving for a new Screen Protector :)</string>
+    <string name="pref_category_position_mapping_header">Slider Position Mapping</string>
 </resources>
