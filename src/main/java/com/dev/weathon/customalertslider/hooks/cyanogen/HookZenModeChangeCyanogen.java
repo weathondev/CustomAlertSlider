@@ -61,6 +61,8 @@ public class HookZenModeChangeCyanogen implements IXposedHookLoadPackage {
                         if(oldZenValue == HookUtils.AllNotificationZenVal){
                             if (mAudioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION) != 0)
                                 settings.edit().putInt("previousNotificationVolume", mAudioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION)).apply();
+                            if (mAudioManager.getStreamVolume(AudioManager.STREAM_RING) != 0)
+                                settings.edit().putInt("previousRingerVolume", mAudioManager.getStreamVolume(AudioManager.STREAM_RING)).apply();
                         }
                         if(settings.getBoolean("silentMediaInVibrate", true)){
                             if (oldZenValue == HookUtils.AllNotificationZenVal || oldZenValue == HookUtils.AlarmsOnlyZenVal){
@@ -167,8 +169,10 @@ public class HookZenModeChangeCyanogen implements IXposedHookLoadPackage {
                             AudioManager mAudioManager = (AudioManager) AndroidAppHelper.currentApplication().getSystemService(Context.AUDIO_SERVICE);
                             if ((int) param.args[0] == HookUtils.PriorityZenVal) {
                                 mAudioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, 0);
+                                mAudioManager.setStreamVolume(AudioManager.STREAM_RING, 0, 0);
                             } else if ((int) param.args[0] == HookUtils.AllNotificationZenVal) {
                                 mAudioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, settings.getInt("previousNotificationVolume", 4), 0);
+                                mAudioManager.setStreamVolume(AudioManager.STREAM_RING, settings.getInt("previousRingerVolume", 4), 0);
                             }
                             if (settings.getBoolean("silentMediaInVibrate", true)) {
                                 if ((int) param.args[0] == HookUtils.PriorityZenVal)
