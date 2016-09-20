@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name" translatable="false">Custom Slider</string>
+    <string name="plugin_name">Custom Slider</string>
+    <string name="blurb_on">On</string>
+    <string name="blurb_off">Off</string>
+    <string name="menu_discard_changes">Discard changes</string>
 
     <string name="title_activity_settings" translatable="false">Settings</string>
 
