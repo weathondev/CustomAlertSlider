@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.dev.weathon.customalertslider"
     android:versionCode="1"
     android:versionName="1.0.0">
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-
 
     <application
         android:allowBackup="true"
@@ -24,6 +23,40 @@
         <meta-data
             android:name="xposedminversion"
             android:value="82" />
+
+
+        <activity
+            android:name="com.dev.weathon.customalertslider.tasker.activity.EditActivity"
+            android:exported="true"
+            android:label="@string/plugin_name"
+            android:theme="@style/Theme.AppCompat"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:windowSoftInputMode="adjustResize"
+            tools:ignore="UnusedAttribute">
+            <intent-filter>
+                <action android:name="net.dinglisch.android.tasker.ACTION_EDIT_EVENT"/>
+            </intent-filter>
+        </activity>
+
+        <!--
+             This is the "fire" BroadcastReceiver. Note that the host will reject plug-in
+             BroadcastReceivers for the following reasons:
+                - The BroadcastReceiver isn't exported (e.g. android:exported="false")
+                - The BroadcastReceiver isn't enabled (e.g. android:enabled="false")
+                - The BroadcastReceiver requires permissions not available to the host
+                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.QUERY_CONDITION
+        -->
+        <receiver
+            android:name="com.dev.weathon.customalertslider.tasker.receiver.QueryReceiver"
+            android:exported="true"
+            tools:ignore="ExportedReceiver">
+
+            <!-- this Intent filter allows the plug-in to discovered by the host. -->
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.QUERY_CONDITION"/>
+                <action android:name="com.dev.weathon.customalertslider.SLIDER_CHANGED" />
+            </intent-filter>
+        </receiver>
 
 
         <activity
@@ -54,14 +87,6 @@
             android:name=".MyPreferenceProvider"
             android:authorities="com.dev.weathon.customalertslider"
             android:exported="true" />
-
-
-
-        <receiver android:name=".notUsed.BootCompletedReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
 
         <service android:enabled="true" android:name=".notUsed.MyService" />
 

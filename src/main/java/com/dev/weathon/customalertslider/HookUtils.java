@@ -22,6 +22,7 @@ import java.util.Map;
  * Created by Joshua on 02.09.2016.
  */
 public final class HookUtils { //final because the class should be handled like c#'s static class
+    public static final String INTENT_SLIDER_CHANGED = "com.dev.weathon.customalertslider.SLIDER_CHANGED";
 
 
     private static int NETWORK_MODE_GSM_ONLY = 1; //2g
