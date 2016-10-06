@@ -19,7 +19,7 @@ public final class QueryReceiver extends BroadcastReceiver {
                     EditActivity.class.getName());
 
     private static SliderState currentState = SliderState.BOTTOM;
-    private static boolean comingFromBoot = false;
+    private static boolean comingFromBoot = true;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -43,7 +43,7 @@ public final class QueryReceiver extends BroadcastReceiver {
                     break;
             }
             comingFromBoot = intent.getBooleanExtra("comingFromBoot", false);
-
+            Log.d("CustomAlertSlider", "got result: " + currentState + " coming from boot: " + comingFromBoot);
             TaskerPlugin.Event.addPassThroughMessageID(INTENT_REQUEST_REQUERY);
             context.sendBroadcast(INTENT_REQUEST_REQUERY);
         } else {

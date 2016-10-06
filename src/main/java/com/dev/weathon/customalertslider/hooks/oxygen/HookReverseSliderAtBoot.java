@@ -146,7 +146,7 @@ public class HookReverseSliderAtBoot implements IXposedHookLoadPackage {
     }
 
     private void sendSliderChangeIntent(Context context, int newNotificationMode, boolean comingFromBoot) {
-        XposedBridge.log("Slider change occured: " + newNotificationMode);
+        XposedBridge.log("Slider change occured: " + newNotificationMode + " comingFromboot" + comingFromBoot);
 
         Intent changeIntent = new Intent();
 
