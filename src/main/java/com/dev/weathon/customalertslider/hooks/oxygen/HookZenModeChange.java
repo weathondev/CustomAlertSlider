@@ -84,7 +84,7 @@ public class HookZenModeChange implements IXposedHookLoadPackage {
                     }
 
                     newNotificationMode = (int) param.args[0];
-                    sendSliderChangeIntent(newNotificationMode);
+                    sendSliderChangeIntent(AndroidAppHelper.currentApplication(), newNotificationMode, false);
 
                     Set<String> emptySet = Collections.emptySet();
                     setResultNull = false;
@@ -223,16 +223,14 @@ public class HookZenModeChange implements IXposedHookLoadPackage {
         }
     }
 
-    private void sendSliderChangeIntent(int newNotificationMode) {
+    private void sendSliderChangeIntent(Context context, int newNotificationMode, boolean comingFromBoot) {
         XposedBridge.log("Slider change occured: " + newNotificationMode);
 
         Intent changeIntent = new Intent();
 
-        Object activityThread = XposedHelpers.callStaticMethod(XposedHelpers.findClass("android.app.ActivityThread", null), "currentActivityThread");
-        Context context = (Context)XposedHelpers.callMethod(activityThread, "getSystemContext");
-
         changeIntent.setAction(HookUtils.INTENT_SLIDER_CHANGED);
         changeIntent.putExtra("state", newNotificationMode);
+        changeIntent.putExtra("comingFromBoot", comingFromBoot);
 
         context.sendBroadcast(changeIntent);
     }

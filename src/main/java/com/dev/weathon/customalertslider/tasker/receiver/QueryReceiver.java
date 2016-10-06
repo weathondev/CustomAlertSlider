@@ -19,6 +19,7 @@ public final class QueryReceiver extends BroadcastReceiver {
                     EditActivity.class.getName());
 
     private static SliderState currentState = SliderState.BOTTOM;
+    private static boolean comingFromBoot = false;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -41,6 +42,7 @@ public final class QueryReceiver extends BroadcastReceiver {
                     currentState = SliderState.BOTTOM;
                     break;
             }
+            comingFromBoot = intent.getBooleanExtra("comingFromBoot", false);
 
             TaskerPlugin.Event.addPassThroughMessageID(INTENT_REQUEST_REQUERY);
             context.sendBroadcast(INTENT_REQUEST_REQUERY);
@@ -57,10 +59,11 @@ public final class QueryReceiver extends BroadcastReceiver {
                 Bundle varsBundle = new Bundle();
 
                 varsBundle.putString("%pstate", currentState.name());
+                varsBundle.putString("%frombootup", comingFromBoot ? "true" : "false");
                 TaskerPlugin.addVariableBundle(getResultExtras(true), varsBundle);
             }
 
-            Log.d("CustomAlertSlider", "send result: " + currentState);
+            Log.d("CustomAlertSlider", "send result: " + currentState + " coming from boot: " + comingFromBoot);
             setResultCode(com.twofortyfouram.locale.Intent.RESULT_CONDITION_SATISFIED);
         }
     }

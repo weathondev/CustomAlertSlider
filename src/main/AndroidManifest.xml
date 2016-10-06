@@ -5,8 +5,9 @@
     android:versionCode="1"
     android:versionName="1.0.0">
 
-    <!-- <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
 
     <application
         android:allowBackup="true"
@@ -87,6 +88,12 @@
             android:name=".MyPreferenceProvider"
             android:authorities="com.dev.weathon.customalertslider"
             android:exported="true" />
+
+        <receiver android:name=".notUsed.BootCompletedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <service android:enabled="true" android:name=".notUsed.MyService" />
 

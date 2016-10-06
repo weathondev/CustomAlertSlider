@@ -4,6 +4,7 @@ package com.dev.weathon.customalertslider.hooks.cyanogen;
 import android.app.AndroidAppHelper;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -79,6 +80,7 @@ public class HookZenModeChangeCyanogen implements IXposedHookLoadPackage {
 
 
                     if(newNotificationMode == settings.getInt("SliderIsOnTop", 0)){
+                        sendSliderChangeIntent(AndroidAppHelper.currentApplication(), HookUtils.TotalSilenceZenValOxygen, settings.getBoolean("comingFromBoot", false));
                         ArrayList<HookUtils.MyEnum> TopPositionActions = new ArrayList<HookUtils.MyEnum>();
                         for(String s : settings.getStringSet("topPosition", emptySet))
                             TopPositionActions.add(HookUtils.MyEnum.valueOf(s));
@@ -97,6 +99,7 @@ public class HookZenModeChangeCyanogen implements IXposedHookLoadPackage {
                         }
                     }
                     else if (newNotificationMode == settings.getInt("SliderIsOnMid", 0)) {
+                        sendSliderChangeIntent(AndroidAppHelper.currentApplication(), HookUtils.PriorityZenValOxygen, settings.getBoolean("comingFromBoot", false));
                         ArrayList<HookUtils.MyEnum> MidPositionActions = new ArrayList<HookUtils.MyEnum>();
                         for (String s : settings.getStringSet("midPosition", emptySet))
                             MidPositionActions.add(HookUtils.MyEnum.valueOf(s));
@@ -115,6 +118,7 @@ public class HookZenModeChangeCyanogen implements IXposedHookLoadPackage {
                         }
                     }
                     else if (newNotificationMode == settings.getInt("SliderIsOnBot", 0)){
+                        sendSliderChangeIntent(AndroidAppHelper.currentApplication(), HookUtils.AllNotificationZenValOxygen, settings.getBoolean("comingFromBoot", false));
                         ArrayList<HookUtils.MyEnum> BotPositionActions = new ArrayList<HookUtils.MyEnum>();
                         for(String s : settings.getStringSet("botPosition", emptySet))
                             BotPositionActions.add(HookUtils.MyEnum.valueOf(s));
@@ -189,5 +193,16 @@ public class HookZenModeChangeCyanogen implements IXposedHookLoadPackage {
 
 
 
+    }
+    private void sendSliderChangeIntent(Context context, int newNotificationMode, boolean comingFromBoot) {
+        XposedBridge.log("Slider change occured: " + newNotificationMode);
+
+        Intent changeIntent = new Intent();
+
+        changeIntent.setAction(HookUtils.INTENT_SLIDER_CHANGED);
+        changeIntent.putExtra("state", newNotificationMode);
+        changeIntent.putExtra("comingFromBoot", comingFromBoot);
+
+        context.sendBroadcast(changeIntent);
     }
 }

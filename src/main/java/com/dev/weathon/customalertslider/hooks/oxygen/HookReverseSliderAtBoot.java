@@ -53,6 +53,7 @@ public class HookReverseSliderAtBoot implements IXposedHookLoadPackage {
 
                     if (settings.getBoolean("comingFromBoot", false)) {
                         int newNotificationMode = (int) param.args[0];
+                        sendSliderChangeIntent(AndroidAppHelper.currentApplication(), newNotificationMode, true);
 
                         Set<String> emptySet = Collections.emptySet();
 
@@ -142,5 +143,17 @@ public class HookReverseSliderAtBoot implements IXposedHookLoadPackage {
                 }
             });
         }
+    }
+
+    private void sendSliderChangeIntent(Context context, int newNotificationMode, boolean comingFromBoot) {
+        XposedBridge.log("Slider change occured: " + newNotificationMode);
+
+        Intent changeIntent = new Intent();
+
+        changeIntent.setAction(HookUtils.INTENT_SLIDER_CHANGED);
+        changeIntent.putExtra("state", newNotificationMode);
+        changeIntent.putExtra("comingFromBoot", comingFromBoot);
+
+        context.sendBroadcast(changeIntent);
     }
 }

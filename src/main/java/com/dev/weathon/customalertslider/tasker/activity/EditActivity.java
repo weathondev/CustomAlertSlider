@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
 
 import com.dev.weathon.customalertslider.R;
@@ -46,6 +47,7 @@ public final class EditActivity extends AppCompatActivity {
         getSupportActionBar().setSubtitle(R.string.plugin_name);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
     }
 
     @Override
@@ -95,7 +97,8 @@ public final class EditActivity extends AppCompatActivity {
 
             if ( TaskerPlugin.hostSupportsRelevantVariables( getIntent().getExtras() ) )
                 TaskerPlugin.addRelevantVariableList( resultIntent, new String [] {
-                        "%pstate\nSlider State\nThe state of the slider: TOP, MIDDLE, BOTTOM"
+                        "%pstate\nSlider State\nThe state of the slider: TOP, MIDDLE, BOTTOM",
+                        "%frombootup\nEvent coming from Bootup\nIndicates if the event was fired from bootup or not: true, false"
                 } );
 
             setResult(RESULT_OK, resultIntent);

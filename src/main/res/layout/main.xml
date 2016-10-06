@@ -12,9 +12,17 @@
 ** See the License for the specific language governing permissions and
 ** limitations under the License.
 -->
+
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:choiceMode="singleChoice"
-    android:id="@+id/main" />
+    android:id="@+id/main"
+    android:padding="10dp"
+    android:textSize="25sp"
+    android:text="@string/taskerplugin"/>
+
+
+
+
