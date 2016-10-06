@@ -20,7 +20,7 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="Module to customize the alert slider from the OnePlus 3 on Oxygen OS. May also work for Oneplus 2 or Oneplus X." />
+            android:value="Module to customize the alert slider of the OnePlus phones." />
         <meta-data
             android:name="xposedminversion"
             android:value="82" />
