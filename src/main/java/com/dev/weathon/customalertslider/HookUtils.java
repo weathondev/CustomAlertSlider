@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.net.wifi.WifiManager;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
@@ -17,6 +18,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
+import de.robv.android.xposed.XposedBridge;
 
 /**
  * Created by Joshua on 02.09.2016.
@@ -31,32 +35,37 @@ public final class HookUtils { //final because the class should be handled like 
 
     private HookUtils(){} //private constructor because the class should be handled like c#'s static class
 
-
+/*
+<item>ALL_NOTIFICATIONS</item>
+        <item>PRIORITY</item>
+        <item>ALARMS_ONLY</item>
+        <item>TOTAL_SILENCE</item>
+        <item>AIRPLANE</item>
+        <item>BLUETOOTH</item>
+        <item>FLASHLIGHT</item>
+        <item>GPS</item>
+        <item>MOBILE_DATA</item>
+        <item>PREFER_NETWORK</item>
+        <item>SCREEN_ORIENTATION</item>
+        <item>SCREEN_BRIGHTNESS</item>
+        <item>STARTAPP</item>
+        <item>WIFI</item>
+ */
     public enum MyEnum {
-        AIRPLANE_ON(1),
-        AIRPLANE_OFF(2),
-        BLUETOOTH_ON(3),
-        BLUETOOTH_OFF(4),
-        FLASHLIGHT_ON(5),
-        FLASHLIGHT_OFF(6),
-        GPS_HIGH_ACCURACY(7),
-        GPS_DEVICE_ONLY(8),
-        GPS_BATTERY_SAVING(9),
-        GPS_OFF(10),
-        MOBILE_DATA_ON(11),
-        MOBILE_DATA_OFF(12),
-        PREFER_NETWORK_2G(13),
-        PREFER_NETWORK_3G(14),
-        PREFER_NETWORK_4G(15),
-        STARTAPP(16),
-        WIFI_ON(17),
-        WIFI_OFF(18),
-        ALL_NOTIFICATIONS(19),
-        PRIORITY(20),
-        ALARMS_ONLY(21),
-        TOTAL_SILENCE(22),
-        SCREEN_ORIENTATION_AUTO(23),
-        SCREEN_ORIENTATION_PORTRAIT(24);
+        ALL_NOTIFICATIONS(0),
+        PRIORITY(1),
+        ALARMS_ONLY(2),
+        TOTAL_SILENCE(3),
+        AIRPLANE(4),
+        BLUETOOTH(5),
+        FLASHLIGHT(6),
+        GPS(7),
+        MOBILE_DATA(8),
+        PREFER_NETWORK(9),
+        SCREEN_ORIENTATION(10),
+        SCREEN_BRIGHTNESS(11),
+        STARTAPP(12),
+        WIFI(13);
 
         private final int value;
 
@@ -70,47 +79,128 @@ public final class HookUtils { //final because the class should be handled like 
     }
 
     //Activate Custom States
-    public static void activateStates(Context context, ArrayList<MyEnum> modeList, String appToStart){
-        if (modeList.contains(MyEnum.AIRPLANE_ON))
-            HookUtils.enableAirplane(true);
-        if (modeList.contains(MyEnum.AIRPLANE_OFF))
-            HookUtils.enableAirplane(false);
-        if (modeList.contains(MyEnum.BLUETOOTH_ON))
-            HookUtils.enableBluetooth(true);
-        if (modeList.contains(MyEnum.BLUETOOTH_OFF))
-            HookUtils.enableBluetooth(false);
-        if (modeList.contains(MyEnum.FLASHLIGHT_ON))
-            HookUtils.enableFlashlight(context,true);
-        if (modeList.contains(MyEnum.FLASHLIGHT_OFF))
-            HookUtils.enableFlashlight(context, false);
-        if (modeList.contains(MyEnum.GPS_HIGH_ACCURACY))
-            HookUtils.setGPS(context, Settings.Secure.LOCATION_MODE_HIGH_ACCURACY);
-        if (modeList.contains(MyEnum.GPS_DEVICE_ONLY))
-            HookUtils.setGPS(context, Settings.Secure.LOCATION_MODE_SENSORS_ONLY);
-        if (modeList.contains(MyEnum.GPS_BATTERY_SAVING))
-            HookUtils.setGPS(context, Settings.Secure.LOCATION_MODE_BATTERY_SAVING);
-        if (modeList.contains(MyEnum.GPS_OFF))
-            HookUtils.setGPS(context, Settings.Secure.LOCATION_MODE_OFF);
-        if (modeList.contains(MyEnum.MOBILE_DATA_ON))
-            HookUtils.enableMobileData(context, true);
-        if (modeList.contains(MyEnum.MOBILE_DATA_OFF))
-            HookUtils.enableMobileData(context, false);
-        if (modeList.contains(MyEnum.PREFER_NETWORK_2G))
-            HookUtils.setPreferredNetworkType(context, NETWORK_MODE_GSM_ONLY);
-        if (modeList.contains(MyEnum.PREFER_NETWORK_3G))
-            HookUtils.setPreferredNetworkType(context, NETWORK_MODE_GSM_UMTS);
-        if (modeList.contains(MyEnum.PREFER_NETWORK_4G))
-            HookUtils.setPreferredNetworkType(context, NETWORK_MODE_LTE_GSM_WCDMA);
-        if (modeList.contains(MyEnum.STARTAPP))
-            HookUtils.startApp(context, appToStart);
-        if (modeList.contains(MyEnum.WIFI_ON))
-            HookUtils.enableWifi(context, true);
-        if (modeList.contains(MyEnum.WIFI_OFF))
-            HookUtils.enableWifi(context, false);
-        if (modeList.contains(MyEnum.SCREEN_ORIENTATION_AUTO))
-            HookUtils.enableAutoScreenRotation(true);
-        if (modeList.contains(MyEnum.SCREEN_ORIENTATION_PORTRAIT))
-            HookUtils.enableAutoScreenRotation(false);
+    public static void activateStates(Context context, ArrayList<SliderAction> modeList){
+        for(SliderAction s : modeList){
+            Set<Map.Entry<String, String>> stringParams = s.getStringParameters().entrySet();
+            Set<Map.Entry<String, Boolean>> boolParams = s.getBooleanParameters().entrySet();
+            Set<Map.Entry<String, Integer>> intParams = s.getIntParameters().entrySet();
+            Log.e("CustomAlertSlider", "activateStates");
+            for (Map.Entry<String, String> param : stringParams) {
+                Log.e("CustomAlertSlider", param.getKey());
+            }
+            for (Map.Entry<String, Integer> param : intParams) {
+                Log.e("CustomAlertSlider", param.getKey());
+            }
+
+            if (s.getId().equalsIgnoreCase(MyEnum.AIRPLANE.toString())){
+                for (Map.Entry<String, String> param : stringParams) {
+                    if (param.getKey().equalsIgnoreCase("mode")){
+                        if (param.getValue().equalsIgnoreCase("on"))
+                            enableAirplane(true);
+                        else if (param.getValue().equalsIgnoreCase("off"))
+                            enableAirplane(false);
+                    }
+                }
+            }
+            if (s.getId().equalsIgnoreCase(MyEnum.BLUETOOTH.toString())){
+                for (Map.Entry<String, String> param : stringParams) {
+                    if (param.getKey().equalsIgnoreCase("mode")){
+                        if (param.getValue().equalsIgnoreCase("on"))
+                            enableBluetooth(true);
+                        else if (param.getValue().equalsIgnoreCase("off"))
+                            enableBluetooth(false);
+                    }
+                }
+            }
+            if (s.getId().equalsIgnoreCase(MyEnum.FLASHLIGHT.toString())){
+                for (Map.Entry<String, String> param : stringParams) {
+                    if (param.getKey().equalsIgnoreCase("mode")){
+                        if (param.getValue().equalsIgnoreCase("on"))
+                            enableFlashlight(context, true);
+                        else if (param.getValue().equalsIgnoreCase("off"))
+                            enableFlashlight(context, false);
+                    }
+                }
+            }
+            if (s.getId().equalsIgnoreCase(MyEnum.GPS.toString())){
+                for (Map.Entry<String, String> param : stringParams) {
+                    if (param.getKey().equalsIgnoreCase("mode")){
+                        if (param.getValue().equalsIgnoreCase("HIGH_ACCURACY"))
+                            setGPS(context, Settings.Secure.LOCATION_MODE_HIGH_ACCURACY);
+                        else if (param.getValue().equalsIgnoreCase("DEVICE_ONLY"))
+                            setGPS(context, Settings.Secure.LOCATION_MODE_SENSORS_ONLY);
+                        else if (param.getValue().equalsIgnoreCase("BATTERY_SAVING"))
+                            setGPS(context, Settings.Secure.LOCATION_MODE_BATTERY_SAVING);
+                        else if (param.getValue().equalsIgnoreCase("GPS_OFF"))
+                            setGPS(context, Settings.Secure.LOCATION_MODE_OFF);
+                    }
+                }
+            }
+            if (s.getId().equalsIgnoreCase(MyEnum.MOBILE_DATA.toString())){
+                for (Map.Entry<String, String> param : stringParams) {
+                    if (param.getKey().equalsIgnoreCase("mode")){
+                        if (param.getValue().equalsIgnoreCase("on"))
+                            enableMobileData(context, true);
+                        else if (param.getValue().equalsIgnoreCase("off"))
+                            enableMobileData(context, false);
+                    }
+                }
+            }
+            if (s.getId().equalsIgnoreCase(MyEnum.WIFI.toString())){
+                for (Map.Entry<String, String> param : stringParams) {
+                    if (param.getKey().equalsIgnoreCase("mode")){
+                        if (param.getValue().equalsIgnoreCase("on"))
+                            enableWifi(context, true);
+                        else if (param.getValue().equalsIgnoreCase("off"))
+                            enableWifi(context, false);
+                    }
+                }
+            }
+            if (s.getId().equalsIgnoreCase(MyEnum.PREFER_NETWORK.toString())){
+                for (Map.Entry<String, String> param : stringParams) {
+                    if (param.getKey().equalsIgnoreCase("mode")){
+                        if (param.getValue().equalsIgnoreCase("2G"))
+                            setPreferredNetworkType(context, NETWORK_MODE_GSM_ONLY);
+                        else if (param.getValue().equalsIgnoreCase("3G"))
+                            setPreferredNetworkType(context, NETWORK_MODE_GSM_UMTS);
+                        else if (param.getValue().equalsIgnoreCase("4G"))
+                            setPreferredNetworkType(context, NETWORK_MODE_LTE_GSM_WCDMA);
+                    }
+                }
+            }
+            if (s.getId().equalsIgnoreCase(MyEnum.SCREEN_ORIENTATION.toString())){
+                for (Map.Entry<String, String> param : stringParams) {
+                    if (param.getKey().equalsIgnoreCase("mode")){
+                        if (param.getValue().equalsIgnoreCase("AUTO"))
+                            enableAutoScreenRotation(true);
+                        else if (param.getValue().equalsIgnoreCase("PORTRAIT"))
+                            enableAutoScreenRotation(false);
+                    }
+                }
+            }
+            if (s.getId().equalsIgnoreCase(MyEnum.SCREEN_BRIGHTNESS.toString())){
+                for (Map.Entry<String, String> param : stringParams) {
+                    if (param.getKey().equalsIgnoreCase("mode")){
+                        if (param.getValue().equalsIgnoreCase("AUTO"))
+                            setDisplayBrightnessModeAuto(context);
+                    }
+                }
+                for (Map.Entry<String, Integer> param : intParams) {
+                    if (param.getKey().equalsIgnoreCase("brightness_level")){
+                        setDisplayBrightness(context, param.getValue());
+                    }
+                }
+            }
+            if (s.getId().equalsIgnoreCase(MyEnum.STARTAPP.toString())){
+                for (Map.Entry<String, String> param : stringParams) {
+                    if (param.getKey().equalsIgnoreCase("apptostart")){
+                        HookUtils.startApp(context, param.getValue());
+                    }
+                }
+            }
+
+            Log.e("CustomAlertSlider", "activateStates end");
+        }
     }
 
 
@@ -199,7 +289,14 @@ public final class HookUtils { //final because the class should be handled like 
     }
     public static void enableAutoScreenRotation(boolean enable){
         Settings.System.putInt(AndroidAppHelper.currentApplication().getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, enable ? 1 : 0);
+    }
 
+    public static void setDisplayBrightnessModeAuto(Context context){
+        Settings.System.putInt(context.getContentResolver(),Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
+    }
+    public static void setDisplayBrightness(Context context, int brightness){
+        Settings.System.putInt(context.getContentResolver(),Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+        Settings.System.putInt(context.getContentResolver(),Settings.System.SCREEN_BRIGHTNESS, brightness);
     }
 
     public static final String AllNotificationHardwareVal = "603";

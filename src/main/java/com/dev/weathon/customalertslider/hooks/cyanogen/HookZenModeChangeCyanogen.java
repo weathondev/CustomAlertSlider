@@ -13,10 +13,15 @@ import android.util.Log;
 
 import com.crossbowffs.remotepreferences.RemotePreferences;
 import com.dev.weathon.customalertslider.HookUtils;
+import com.dev.weathon.customalertslider.SliderAction;
+import com.dev.weathon.customalertslider.SliderPositionValue;
+import com.google.gson.Gson;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -72,69 +77,83 @@ public class HookZenModeChangeCyanogen implements IXposedHookLoadPackage {
                         }
                     }
 
+                    Gson gson = new Gson();
+                    String json = settings.getString("botPosition", "");
+                    SliderPositionValue obj = gson.fromJson(json, SliderPositionValue.class);
+                    if (obj != null){
+                        ArrayList<SliderAction> actions = obj.getActions();
+                        int count = actions.size() - 1;
+
+                        for (int i = 0; i < count; i++) {
+                            XposedBridge.log("-------------------------------------------------------");
+                            XposedBridge.log("Action: ");
+                            XposedBridge.log(actions.get(i).getDisplayName());
+                            int countBool = actions.get(i).getBooleanParameters().size() - 1;
+
+                            Set<Map.Entry<String, Boolean>> set = actions.get(i).getBooleanParameters().entrySet();
+                            for (Map.Entry<String, Boolean> boolparam : set) {
+                                XposedBridge.log(boolparam.getKey() + ";" + boolparam.getValue());
+                            }
+
+                            Set<Map.Entry<String, String>> set2 = actions.get(i).getStringParameters().entrySet();
+                            for (Map.Entry<String, String> stringparam : set2) {
+                                XposedBridge.log(stringparam.getKey() + ";" + stringparam.getValue());
+                            }
+
+                            Set<Map.Entry<String, Integer>> set3 = actions.get(i).getIntParameters().entrySet();
+                            for (Map.Entry<String, Integer> intparam : set3) {
+                                XposedBridge.log(intparam.getKey() + ";" + intparam.getValue());
+                            }
+                        }
+                    }
+                    else
+                        XposedBridge.log("obj is null");
+
 
                     newNotificationMode = (int)param.args[0];
 
                     Set<String> emptySet = Collections.emptySet();
                     setResultNull = false;
-
+                    ArrayList<SliderAction> positionActions = null;
 
                     if(newNotificationMode == settings.getInt("SliderIsOnTop", 0)){
-                        sendSliderChangeIntent(AndroidAppHelper.currentApplication(), HookUtils.TotalSilenceZenValOxygen, settings.getBoolean("comingFromBoot", false));
-                        ArrayList<HookUtils.MyEnum> TopPositionActions = new ArrayList<HookUtils.MyEnum>();
-                        for(String s : settings.getStringSet("topPosition", emptySet))
-                            TopPositionActions.add(HookUtils.MyEnum.valueOf(s));
+                        XposedBridge.log("newNotificationMode=TotalSilenceZenValOxygen" + newNotificationMode);
+                        positionActions = getActionsForPosition("topPosition", settings);
+                    }
+                    else if(newNotificationMode == settings.getInt("SliderIsOnMid", 0)){
+                        XposedBridge.log("newNotificationMode=PriorityZenValOxygen" + newNotificationMode);
+                        positionActions = getActionsForPosition("midPosition", settings);
+                    }
+                    else if(newNotificationMode == settings.getInt("SliderIsOnBot", 0)){
+                        XposedBridge.log("newNotificationMode=AllNotificationZenValOxygen" + newNotificationMode);
+                        positionActions = getActionsForPosition("botPosition", settings);
+                    }
 
-                        if (TopPositionActions.contains(HookUtils.MyEnum.ALL_NOTIFICATIONS))
+                    boolean oneOfTheZenModeSwitches = false;
+
+                    for(SliderAction s : positionActions){
+                        if (s.getId().equalsIgnoreCase(HookUtils.MyEnum.ALL_NOTIFICATIONS.toString())){
+                            oneOfTheZenModeSwitches = true;
                             param.args[0] = HookUtils.AllNotificationZenVal;
-                        else if (TopPositionActions.contains(HookUtils.MyEnum.PRIORITY))
+                        }
+                        else if (s.getId().equalsIgnoreCase(HookUtils.MyEnum.PRIORITY.toString())){
+                            oneOfTheZenModeSwitches = true;
                             param.args[0] = HookUtils.PriorityZenVal;
-                        else if (TopPositionActions.contains(HookUtils.MyEnum.ALARMS_ONLY))
+                        }
+                        else if (s.getId().equalsIgnoreCase(HookUtils.MyEnum.ALARMS_ONLY.toString())){
+                            oneOfTheZenModeSwitches = true;
                             param.args[0] = HookUtils.AlarmsOnlyZenVal;
-                        else if (TopPositionActions.contains(HookUtils.MyEnum.TOTAL_SILENCE))
+                        }
+                        else if (s.getId().equalsIgnoreCase(HookUtils.MyEnum.TOTAL_SILENCE.toString())){
+                            oneOfTheZenModeSwitches = true;
                             param.args[0] = HookUtils.TotalSilenceZenVal;
-                        else{
-                            setResultNull = true;
-                            param.setResult(null);
                         }
                     }
-                    else if (newNotificationMode == settings.getInt("SliderIsOnMid", 0)) {
-                        sendSliderChangeIntent(AndroidAppHelper.currentApplication(), HookUtils.PriorityZenValOxygen, settings.getBoolean("comingFromBoot", false));
-                        ArrayList<HookUtils.MyEnum> MidPositionActions = new ArrayList<HookUtils.MyEnum>();
-                        for (String s : settings.getStringSet("midPosition", emptySet))
-                            MidPositionActions.add(HookUtils.MyEnum.valueOf(s));
-
-                        if (MidPositionActions.contains(HookUtils.MyEnum.ALL_NOTIFICATIONS))
-                            param.args[0] = HookUtils.AllNotificationZenVal;
-                        else if (MidPositionActions.contains(HookUtils.MyEnum.PRIORITY))
-                            param.args[0] = HookUtils.PriorityZenVal;
-                        else if (MidPositionActions.contains(HookUtils.MyEnum.ALARMS_ONLY))
-                            param.args[0] = HookUtils.AlarmsOnlyZenVal;
-                        else if (MidPositionActions.contains(HookUtils.MyEnum.TOTAL_SILENCE))
-                            param.args[0] = HookUtils.TotalSilenceZenVal;
-                        else{
-                            setResultNull = true;
-                            param.setResult(null);
-                        }
-                    }
-                    else if (newNotificationMode == settings.getInt("SliderIsOnBot", 0)){
-                        sendSliderChangeIntent(AndroidAppHelper.currentApplication(), HookUtils.AllNotificationZenValOxygen, settings.getBoolean("comingFromBoot", false));
-                        ArrayList<HookUtils.MyEnum> BotPositionActions = new ArrayList<HookUtils.MyEnum>();
-                        for(String s : settings.getStringSet("botPosition", emptySet))
-                            BotPositionActions.add(HookUtils.MyEnum.valueOf(s));
-
-                        if (BotPositionActions.contains(HookUtils.MyEnum.ALL_NOTIFICATIONS))
-                            param.args[0] = HookUtils.AllNotificationZenVal;
-                        else if (BotPositionActions.contains(HookUtils.MyEnum.PRIORITY))
-                            param.args[0] = HookUtils.PriorityZenVal;
-                        else if (BotPositionActions.contains(HookUtils.MyEnum.ALARMS_ONLY))
-                            param.args[0] = HookUtils.AlarmsOnlyZenVal;
-                        else if (BotPositionActions.contains(HookUtils.MyEnum.TOTAL_SILENCE))
-                            param.args[0] = HookUtils.TotalSilenceZenVal;
-                        else{
-                            setResultNull = true;
-                            param.setResult(null);
-                        }
+                    if (!oneOfTheZenModeSwitches){
+                        Vibrator v = (Vibrator) AndroidAppHelper.currentApplication().getSystemService(Context.VIBRATOR_SERVICE);
+                        v.vibrate(50);
+                        param.setResult(null);
+                        setResultNull = true;
                     }
                 }
 
@@ -143,27 +162,17 @@ public class HookZenModeChangeCyanogen implements IXposedHookLoadPackage {
                     SharedPreferences settings = new RemotePreferences(AndroidAppHelper.currentApplication(), "com.dev.weathon.customalertslider", "com.dev.weathon.customalertslider_preferences");
 
                     if (!settings.getBoolean("comingFromBoot", true)){
-                        Set<String> emptySet = Collections.emptySet();
+                        ArrayList<SliderAction> TopPositionActions = getActionsForPosition("topPosition", settings);
+                        ArrayList<SliderAction> MidPositionActions = getActionsForPosition("midPosition", settings);
+                        ArrayList<SliderAction> BotPositionActions = getActionsForPosition("botPosition", settings);
 
-                        ArrayList<HookUtils.MyEnum> TopPositionActions = new ArrayList<HookUtils.MyEnum>();
-                        for(String s : settings.getStringSet("topPosition", emptySet)){
-                            TopPositionActions.add(HookUtils.MyEnum.valueOf(s));
-                        }
-                        ArrayList<HookUtils.MyEnum> MidPositionActions = new ArrayList<HookUtils.MyEnum>();
-                        for(String s : settings.getStringSet("midPosition", emptySet)){
-                            MidPositionActions.add(HookUtils.MyEnum.valueOf(s));
-                        }
-                        ArrayList<HookUtils.MyEnum> BotPositionActions = new ArrayList<HookUtils.MyEnum>();
-                        for(String s : settings.getStringSet("botPosition", emptySet)){
-                            BotPositionActions.add(HookUtils.MyEnum.valueOf(s));
-                        }
 
-                        if(newNotificationMode == settings.getInt("SliderIsOnTop", 0))
-                            HookUtils.activateStates(AndroidAppHelper.currentApplication(), TopPositionActions, settings.getString("topPosition_app", null));
+                        if (newNotificationMode == settings.getInt("SliderIsOnTop", 0))
+                            HookUtils.activateStates(AndroidAppHelper.currentApplication(), TopPositionActions);
                         else if (newNotificationMode == settings.getInt("SliderIsOnMid", 0))
-                            HookUtils.activateStates(AndroidAppHelper.currentApplication(), MidPositionActions, settings.getString("midPosition_app", null));
+                            HookUtils.activateStates(AndroidAppHelper.currentApplication(), MidPositionActions);
                         else if (newNotificationMode == settings.getInt("SliderIsOnBot", 0))
-                            HookUtils.activateStates(AndroidAppHelper.currentApplication(), BotPositionActions, settings.getString("botPosition_app", null));
+                            HookUtils.activateStates(AndroidAppHelper.currentApplication(), BotPositionActions);
                     }
                     else
                         settings.edit().putBoolean("comingFromBoot", false).apply();
@@ -204,5 +213,16 @@ public class HookZenModeChangeCyanogen implements IXposedHookLoadPackage {
         changeIntent.putExtra("comingFromBoot", comingFromBoot);
 
         context.sendBroadcast(changeIntent);
+    }
+
+    private ArrayList<SliderAction> getActionsForPosition(String pos, SharedPreferences settings){
+        Gson gson = new Gson();
+        String json = settings.getString(pos, "");
+        SliderPositionValue obj = gson.fromJson(json, SliderPositionValue.class);
+        if (obj != null) {
+            ArrayList<SliderAction> actions = obj.getActions();
+            return actions;
+        }
+        return new ArrayList<SliderAction>();
     }
 }

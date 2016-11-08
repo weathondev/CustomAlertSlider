@@ -40,109 +40,124 @@
         <item>Priority/Vibrate</item>
         <item>Alarms Only</item>
         <item>Total Silence</item>
-        <item>Airplane mode [ON]</item>
-        <item>Airplane mode [OFF]</item>
-        <item>Bluetooth [ON]</item>
-        <item>Bluetooth [OFF]</item>
-        <item>Flashlight [ON]</item>
-        <item>Flashlight [OFF]</item>
-        <item>GPS High Accuracy</item>
-        <item>GPS Device Only</item>
-        <item>GPS Battery Saving</item>
-        <item>GPS [OFF]</item>
-        <item>Mobile Data [ON]</item>
-        <item>Mobile Data [OFF]</item>
-        <item>Preferred Network [2G]</item>
-        <item>Preferred Network [3G]</item>
-        <item>Preferred Network [4G]</item>
-        <item>Screen Orientation [AUTO]</item>
-        <item>Screen Orientation [PORTRAIT]</item>
+        <item>Airplane mode</item>
+        <item>Bluetooth</item>
+        <item>Flashlight</item>
+        <item>GPS</item>
+        <item>Mobile Data</item>
+        <item>Preferred Network</item>
+        <item>Screen Orientation</item>
+        <item>Screen Brightness</item>
         <item>@string/startappstring</item>
-        <item>Wifi [ON]</item>
-        <item>Wifi [OFF]</item>
+        <item>Wifi</item>
     </string-array>
-    <string-array name="pref_topPosition_list_values">
+    <string-array name="pref_sliderposition_list_values">
         <item>ALL_NOTIFICATIONS</item>
         <item>PRIORITY</item>
         <item>ALARMS_ONLY</item>
         <item>TOTAL_SILENCE</item>
-        <item>AIRPLANE_ON</item>
-        <item>AIRPLANE_OFF</item>
-        <item>BLUETOOTH_ON</item>
-        <item>BLUETOOTH_OFF</item>
-        <item>FLASHLIGHT_ON</item>
-        <item>FLASHLIGHT_OFF</item>
-        <item>GPS_HIGH_ACCURACY</item>
-        <item>GPS_DEVICE_ONLY</item>
-        <item>GPS_BATTERY_SAVING</item>
-        <item>GPS_OFF</item>
-        <item>MOBILE_DATA_ON</item>
-        <item>MOBILE_DATA_OFF</item>
-        <item>PREFER_NETWORK_2G</item>
-        <item>PREFER_NETWORK_3G</item>
-        <item>PREFER_NETWORK_4G</item>
-        <item>SCREEN_ORIENTATION_AUTO</item>
-        <item>SCREEN_ORIENTATION_PORTRAIT</item>
+        <item>AIRPLANE</item>
+        <item>BLUETOOTH</item>
+        <item>FLASHLIGHT</item>
+        <item>GPS</item>
+        <item>MOBILE_DATA</item>
+        <item>PREFER_NETWORK</item>
+        <item>SCREEN_ORIENTATION</item>
+        <item>SCREEN_BRIGHTNESS</item>
         <item>STARTAPP</item>
-        <item>WIFI_ON</item>
-        <item>WIFI_OFF</item>
+        <item>WIFI</item>
     </string-array>
 
     <string name="pref_title_midPosition">Middle Slider Position</string>
-    <string-array name="pref_midPosition_list_values">
-        <item>ALL_NOTIFICATIONS</item>
-        <item>PRIORITY</item>
-        <item>ALARMS_ONLY</item>
-        <item>TOTAL_SILENCE</item>
-        <item>AIRPLANE_ON</item>
-        <item>AIRPLANE_OFF</item>
-        <item>BLUETOOTH_ON</item>
-        <item>BLUETOOTH_OFF</item>
-        <item>FLASHLIGHT_ON</item>
-        <item>FLASHLIGHT_OFF</item>
-        <item>GPS_HIGH_ACCURACY</item>
-        <item>GPS_DEVICE_ONLY</item>
-        <item>GPS_BATTERY_SAVING</item>
-        <item>GPS_OFF</item>
-        <item>MOBILE_DATA_ON</item>
-        <item>MOBILE_DATA_OFF</item>
-        <item>PREFER_NETWORK_2G</item>
-        <item>PREFER_NETWORK_3G</item>
-        <item>PREFER_NETWORK_4G</item>
-        <item>SCREEN_ORIENTATION_AUTO</item>
-        <item>SCREEN_ORIENTATION_PORTRAIT</item>
-        <item>STARTAPP</item>
-        <item>WIFI_ON</item>
-        <item>WIFI_OFF</item>
-    </string-array>
+
 
     <string name="pref_title_botPosition">Bottom Slider Position</string>
-    <string-array name="pref_botPosition_list_values">
+
+    <string-array name="noConfigurationNeeded_values">
         <item>ALL_NOTIFICATIONS</item>
         <item>PRIORITY</item>
         <item>ALARMS_ONLY</item>
         <item>TOTAL_SILENCE</item>
-        <item>AIRPLANE_ON</item>
-        <item>AIRPLANE_OFF</item>
-        <item>BLUETOOTH_ON</item>
-        <item>BLUETOOTH_OFF</item>
-        <item>FLASHLIGHT_ON</item>
-        <item>FLASHLIGHT_OFF</item>
-        <item>GPS_HIGH_ACCURACY</item>
-        <item>GPS_DEVICE_ONLY</item>
-        <item>GPS_BATTERY_SAVING</item>
-        <item>GPS_OFF</item>
-        <item>MOBILE_DATA_ON</item>
-        <item>MOBILE_DATA_OFF</item>
-        <item>PREFER_NETWORK_2G</item>
-        <item>PREFER_NETWORK_3G</item>
-        <item>PREFER_NETWORK_4G</item>
-        <item>SCREEN_ORIENTATION_AUTO</item>
-        <item>SCREEN_ORIENTATION_PORTRAIT</item>
-        <item>STARTAPP</item>
-        <item>WIFI_ON</item>
-        <item>WIFI_OFF</item>
     </string-array>
+
+    <string-array name="simpleCombo_values">
+        <item>AIRPLANE</item>
+        <item>BLUETOOTH</item>
+        <item>FLASHLIGHT</item>
+        <item>GPS</item>
+        <item>MOBILE_DATA</item>
+        <item>PREFER_NETWORK</item>
+        <item>SCREEN_ORIENTATION</item>
+        <item>STARTAPP</item>
+        <item>WIFI</item>
+    </string-array>
+
+
+
+    <string-array name="startapp_array">
+        <item>STARTAPP</item>
+    </string-array>
+
+    <string-array name="onOff_titles">
+        <item>ON</item>
+        <item>OFF</item>
+    </string-array>
+    <string-array name="onOff_values">
+        <item>ON</item>
+        <item>OFF</item>
+    </string-array>
+
+    <string-array name="gps_titles">
+        <item>High Accuracy</item>
+        <item>Device Only</item>
+        <item>Battery Saving</item>
+        <item>OFF</item>
+    </string-array>
+    <string-array name="gps_values">
+        <item>HIGH_ACCURACY</item>
+        <item>DEVICE_ONLY</item>
+        <item>BATTERY_SAVING</item>
+        <item>GPS_OFF</item>
+    </string-array>
+
+    <string-array name="network_titles">
+        <item>2G</item>
+        <item>3G</item>
+        <item>4G</item>
+    </string-array>
+    <string-array name="network_values">
+        <item>2G</item>
+        <item>3G</item>
+        <item>4G</item>
+    </string-array>
+
+    <string-array name="orientation_titles">
+        <item>Auto</item>
+        <item>Portrait</item>
+    </string-array>
+    <string-array name="orientation_values">
+        <item>AUTO</item>
+        <item>PORTRAIT</item>
+    </string-array>
+
+    <string-array name="screen_brightness_titles">
+        <item>Auto</item>
+        <item>Level</item>
+    </string-array>
+    <string-array name="screen_brightness_values">
+        <item>AUTO</item>
+        <item>LEVEL</item>
+    </string-array>
+
+    <string name="screen_brightness_level">LEVEL</string>
+
+
+    <string name="GPS">GPS</string>
+    <string name="PREFER_NETWORK">PREFER_NETWORK</string>
+    <string name="SCREEN_ORIENTATION">SCREEN_ORIENTATION</string>
+    <string name="SCREEN_BRIGHTNESS">SCREEN_BRIGHTNESS</string>
+    <string name="STARTAPP">STARTAPP</string>
+
 
     <string name="AlertDialogMessage">If you reverse the alert slider positions, there is a graphical issue in the volume control after rebooting the phone.
     When you boot up the phone with the slider on the top position, it will be shown like it is "Silent". In real, it is on "All Notifications", and everything will work.
@@ -218,4 +233,13 @@
 
     <string name="pref_title_headPhoneMode">Headphone Mode</string>
     <string name="pref_summary_headPhoneMode">When the Headphone Mode is activated, the notification volume will be set to 0 (vibrate), when headphones are connected.</string>
+
+    <string name="save">Save</string>
+    <string name="apply">Apply</string>
+
+    <string name="title_activity_main">Dynamic Views</string>
+    <string name="button_add_new_text">Add action</string>
+    <string name="button_delete_row_description">Delete</string>
+    <string name="button_configure_row_description">Configure</string>
+    <string name="savedToast">Saved</string>
 </resources>

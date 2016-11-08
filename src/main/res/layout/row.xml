@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="horizontal">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="left"
+        android:layout_weight="0.15"
+        android:orientation="vertical">
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:id="@+id/spinnerTextView"/>
+    </LinearLayout>
+
+
+    <ImageButton
+        android:id="@+id/buttonConfigure"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/configure"
+        android:background="@drawable/transparent_background"
+        android:contentDescription="@string/button_configure_row_description"
+        android:onClick="onConfigureClicked"/>
+
+    <ImageButton
+        android:id="@+id/buttonDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/content_remove"
+        android:background="@drawable/transparent_background"
+        android:contentDescription="@string/button_delete_row_description"
+        android:onClick="onDeleteClicked"/>
+
+</LinearLayout>

@@ -21,6 +21,9 @@ import android.util.Log;
 
 import com.crossbowffs.remotepreferences.RemotePreferences;
 import com.dev.weathon.customalertslider.HookUtils;
+import com.dev.weathon.customalertslider.SliderAction;
+import com.dev.weathon.customalertslider.SliderPositionValue;
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -28,6 +31,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
@@ -86,77 +90,44 @@ public class HookZenModeChange implements IXposedHookLoadPackage {
                     newNotificationMode = (int) param.args[0];
                     sendSliderChangeIntent(AndroidAppHelper.currentApplication(), newNotificationMode, false);
 
-                    Set<String> emptySet = Collections.emptySet();
                     setResultNull = false;
+                    ArrayList<SliderAction> positionActions = null;
 
                     if(newNotificationMode == HookUtils.TotalSilenceZenValOxygen){
                         XposedBridge.log("newNotificationMode=TotalSilenceZenValOxygen" + newNotificationMode);
-                        ArrayList<HookUtils.MyEnum> TopPositionActions = new ArrayList<HookUtils.MyEnum>();
-                        for(String s : settings.getStringSet("topPosition", emptySet))
-                            TopPositionActions.add(HookUtils.MyEnum.valueOf(s));
-
-                        if (TopPositionActions.contains(HookUtils.MyEnum.ALL_NOTIFICATIONS))
-                            param.args[0] = HookUtils.AllNotificationZenValOxygen;
-                        else if (TopPositionActions.contains(HookUtils.MyEnum.PRIORITY))
-                            param.args[0] = HookUtils.PriorityZenValOxygen;
-                        else if (TopPositionActions.contains(HookUtils.MyEnum.ALARMS_ONLY) || TopPositionActions.contains(HookUtils.MyEnum.TOTAL_SILENCE))
-                            param.args[0] = HookUtils.TotalSilenceZenValOxygen;
-                        else{
-                            Vibrator v = (Vibrator) AndroidAppHelper.currentApplication().getSystemService(Context.VIBRATOR_SERVICE);
-                            v.vibrate(50);
-                            param.setResult(null);
-                            setResultNull = true;
-                        }
-                        XposedBridge.log("newNotificationMode=AllNotificationZenValOxygen new mode:" + param.args[0]);
-
+                        positionActions = getActionsForPosition("topPosition", settings);
                     }
                     else if(newNotificationMode == HookUtils.PriorityZenValOxygen){
                         XposedBridge.log("newNotificationMode=PriorityZenValOxygen" + newNotificationMode);
-                        ArrayList<HookUtils.MyEnum> MidPositionActions = new ArrayList<HookUtils.MyEnum>();
-                        for(String s : settings.getStringSet("midPosition", emptySet))
-                            MidPositionActions.add(HookUtils.MyEnum.valueOf(s));
-
-                        if (MidPositionActions.contains(HookUtils.MyEnum.ALL_NOTIFICATIONS))
-                            param.args[0] = HookUtils.AllNotificationZenValOxygen;
-                        else if (MidPositionActions.contains(HookUtils.MyEnum.PRIORITY))
-                            param.args[0] = HookUtils.PriorityZenValOxygen;
-                        else if (MidPositionActions.contains(HookUtils.MyEnum.ALARMS_ONLY) || MidPositionActions.contains(HookUtils.MyEnum.TOTAL_SILENCE))
-                            param.args[0] = HookUtils.TotalSilenceZenValOxygen;
-                        else{
-                            Vibrator v = (Vibrator) AndroidAppHelper.currentApplication().getSystemService(Context.VIBRATOR_SERVICE);
-                            v.vibrate(50);
-                            param.setResult(null);
-                            setResultNull = true;
-                        }
+                        positionActions = getActionsForPosition("midPosition", settings);
                     }
                     else if(newNotificationMode == HookUtils.AllNotificationZenValOxygen){
                         XposedBridge.log("newNotificationMode=AllNotificationZenValOxygen" + newNotificationMode);
-                        ArrayList<HookUtils.MyEnum> BotPositionActions = new ArrayList<HookUtils.MyEnum>();
-                        for(String s : settings.getStringSet("botPosition", emptySet))
-                            BotPositionActions.add(HookUtils.MyEnum.valueOf(s));
-
-                        if (BotPositionActions.contains(HookUtils.MyEnum.ALL_NOTIFICATIONS))
-                            param.args[0] = HookUtils.AllNotificationZenValOxygen;
-                        else if (BotPositionActions.contains(HookUtils.MyEnum.PRIORITY))
-                            param.args[0] = HookUtils.PriorityZenValOxygen;
-                        else if (BotPositionActions.contains(HookUtils.MyEnum.ALARMS_ONLY) || BotPositionActions.contains(HookUtils.MyEnum.TOTAL_SILENCE))
-                            param.args[0] = HookUtils.TotalSilenceZenValOxygen;
-                        else{
-                            Vibrator v = (Vibrator) AndroidAppHelper.currentApplication().getSystemService(Context.VIBRATOR_SERVICE);
-                            v.vibrate(50);
-                            param.setResult(null);
-                            setResultNull = true;
-                        }
+                        positionActions = getActionsForPosition("botPosition", settings);
                     }
 
+                    boolean oneOfTheZenModeSwitches = false;
 
-
-                    /*
-                    Vibrator v = (Vibrator) AndroidAppHelper.currentApplication().getSystemService(Context.VIBRATOR_SERVICE);
-                    v.vibrate(50);
-
-                    param.setResult(null);*/
-                    //}
+                    for(SliderAction s : positionActions){
+                        if (s.getId().equalsIgnoreCase(HookUtils.MyEnum.ALL_NOTIFICATIONS.toString())){
+                            oneOfTheZenModeSwitches = true;
+                            param.args[0] = HookUtils.AllNotificationZenValOxygen;
+                        }
+                        else if (s.getId().equalsIgnoreCase(HookUtils.MyEnum.PRIORITY.toString())){
+                            oneOfTheZenModeSwitches = true;
+                            param.args[0] = HookUtils.PriorityZenValOxygen;
+                        }
+                        else if (s.getId().equalsIgnoreCase(HookUtils.MyEnum.ALARMS_ONLY.toString()) || s.getId().equalsIgnoreCase(HookUtils.MyEnum.TOTAL_SILENCE.toString())){
+                            oneOfTheZenModeSwitches = true;
+                            param.args[0] = HookUtils.TotalSilenceZenValOxygen;
+                        }
+                    }
+                    if (!oneOfTheZenModeSwitches){
+                        Vibrator v = (Vibrator) AndroidAppHelper.currentApplication().getSystemService(Context.VIBRATOR_SERVICE);
+                        v.vibrate(50);
+                        param.setResult(null);
+                        setResultNull = true;
+                    }
                 }
 
                 @Override
@@ -164,27 +135,17 @@ public class HookZenModeChange implements IXposedHookLoadPackage {
                     SharedPreferences settings = new RemotePreferences(AndroidAppHelper.currentApplication(), "com.dev.weathon.customalertslider", "com.dev.weathon.customalertslider_preferences");
                     Log.w("CustomAlertSlider", "AfterChangingParam: NewValue = " + param.args[0] + ", OldValue = " + param.args[1]);
 
-                    Set<String> emptySet = Collections.emptySet();
+                    ArrayList<SliderAction> TopPositionActions = getActionsForPosition("topPosition", settings);
+                    ArrayList<SliderAction> MidPositionActions = getActionsForPosition("midPosition", settings);
+                    ArrayList<SliderAction> BotPositionActions = getActionsForPosition("botPosition", settings);
 
-                    ArrayList<HookUtils.MyEnum> TopPositionActions = new ArrayList<HookUtils.MyEnum>();
-                    for (String s : settings.getStringSet("topPosition", emptySet)) {
-                        TopPositionActions.add(HookUtils.MyEnum.valueOf(s));
-                    }
-                    ArrayList<HookUtils.MyEnum> MidPositionActions = new ArrayList<HookUtils.MyEnum>();
-                    for (String s : settings.getStringSet("midPosition", emptySet)) {
-                        MidPositionActions.add(HookUtils.MyEnum.valueOf(s));
-                    }
-                    ArrayList<HookUtils.MyEnum> BotPositionActions = new ArrayList<HookUtils.MyEnum>();
-                    for (String s : settings.getStringSet("botPosition", emptySet)) {
-                        BotPositionActions.add(HookUtils.MyEnum.valueOf(s));
-                    }
 
                     if (newNotificationMode == HookUtils.TotalSilenceZenValOxygen)
-                        HookUtils.activateStates(AndroidAppHelper.currentApplication(), TopPositionActions, settings.getString("topPosition_app", null));
+                        HookUtils.activateStates(AndroidAppHelper.currentApplication(), TopPositionActions);
                     else if (newNotificationMode == HookUtils.PriorityZenValOxygen)
-                        HookUtils.activateStates(AndroidAppHelper.currentApplication(), MidPositionActions, settings.getString("midPosition_app", null));
+                        HookUtils.activateStates(AndroidAppHelper.currentApplication(), MidPositionActions);
                     else if (newNotificationMode == HookUtils.AllNotificationZenValOxygen)
-                        HookUtils.activateStates(AndroidAppHelper.currentApplication(), BotPositionActions, settings.getString("botPosition_app", null));
+                        HookUtils.activateStates(AndroidAppHelper.currentApplication(), BotPositionActions);
 
 
                     if (!setResultNull){
@@ -233,6 +194,17 @@ public class HookZenModeChange implements IXposedHookLoadPackage {
         changeIntent.putExtra("comingFromBoot", comingFromBoot);
 
         context.sendBroadcast(changeIntent);
+    }
+
+    private ArrayList<SliderAction> getActionsForPosition(String pos, SharedPreferences settings){
+        Gson gson = new Gson();
+        String json = settings.getString(pos, "");
+        SliderPositionValue obj = gson.fromJson(json, SliderPositionValue.class);
+        if (obj != null) {
+            ArrayList<SliderAction> actions = obj.getActions();
+            return actions;
+        }
+        return new ArrayList<SliderAction>();
     }
 
 

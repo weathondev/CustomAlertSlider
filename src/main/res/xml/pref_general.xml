@@ -25,26 +25,17 @@
 <PreferenceCategory
         android:title="@string/pref_category_position_mapping_header">
 
-    <com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer
+    <Preference
         android:title="@string/pref_title_topPosition"
-        android:key="topPosition"
-        android:entries="@array/pref_sliderposition_list_titles"
-        android:entryValues="@array/pref_topPosition_list_values">
-    </com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer>
+        android:key="topPosition"/>
 
-    <com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer
+    <Preference
         android:title="@string/pref_title_midPosition"
-        android:key="midPosition"
-        android:entries="@array/pref_sliderposition_list_titles"
-        android:entryValues="@array/pref_midPosition_list_values">
-    </com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer>
+        android:key="midPosition"/>
 
-    <com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer
+    <Preference
         android:title="@string/pref_title_botPosition"
-        android:key="botPosition"
-        android:entries="@array/pref_sliderposition_list_titles"
-        android:entryValues="@array/pref_botPosition_list_values">
-    </com.dev.weathon.customalertslider.MultiSelectPreferenceAppDrawer>
+        android:key="botPosition"/>
 
     <PreferenceScreen
         android:title="@string/pref_title_vibrateInsteadPriority"

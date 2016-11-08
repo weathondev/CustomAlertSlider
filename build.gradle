@@ -27,4 +27,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.android.support:support-v4:24.1.1'
     compile 'com.crossbowffs.remotepreferences:remotepreferences:0.2'
+    compile 'com.google.code.gson:gson:2.7'
 }

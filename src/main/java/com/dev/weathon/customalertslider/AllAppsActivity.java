@@ -27,16 +27,44 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 public class AllAppsActivity extends ListActivity {
     private PackageManager packageManager = null;
     private List<ApplicationInfo> applist = null;
     private ApplicationAdapter listadaptor = null;
+    private String selectedKey;
+    private String selectedValue;
+    private String positionKey;
+    private String actionKey;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.appdrawerlist);
         packageManager = getPackageManager();
+
+
+        Intent callingIntent = getIntent();
+        selectedKey = callingIntent.getStringExtra("selectedKey");
+        selectedValue = callingIntent.getStringExtra("selectedValue");
+        positionKey = callingIntent.getStringExtra("positionKey");
+        actionKey = callingIntent.getStringExtra("actionKey");
+        setTitle(selectedValue);
+
+        SharedPreferences settings  = getSharedPreferences("com.dev.weathon.customalertslider_preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = settings.getString(positionKey, "");
+        SliderPositionValue obj = gson.fromJson(json, SliderPositionValue.class);
+        SliderAction action = null;
+        if (obj != null){
+            ArrayList<SliderAction> actions = obj.getActions();
+            for (SliderAction a: actions) {
+                if(a.getId().equalsIgnoreCase(actionKey))
+                    action = a;
+            }
+        }
 
         new LoadApplications().execute();
 
@@ -49,7 +77,9 @@ public class AllAppsActivity extends ListActivity {
         ApplicationInfo app = applist.get(position);
         getSharedPreferences("com.dev.weathon.customalertslider_preferences", MODE_PRIVATE).edit().putString(getIntent().getStringExtra("preferenceKey") + "_app", app.packageName).apply();
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("result", app.packageName);
+        returnIntent.putExtra("apptostart", app.packageName);
+        returnIntent.putExtra("selectedKey", selectedKey);
+        returnIntent.putExtra("selectedValue", selectedValue);
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }

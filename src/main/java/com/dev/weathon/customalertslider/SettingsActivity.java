@@ -43,6 +43,9 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.PopupWindow;
 
+import com.crossbowffs.remotepreferences.RemotePreferences;
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -54,6 +57,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -80,6 +84,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
 
     public static Preference startAppPreference;
+    private static Preference topPosition;
+    private static Preference midPosition;
+    private static Preference botPosition;
+
+    private static SliderPositionValue topPositionSliderVal;
+    private static SliderPositionValue midPositionSliderVal;
+    private static SliderPositionValue botPositionSliderVal;
 
     private static Preference hideNotificationToasts;
     private static Preference prefScreenExtendedVolumeControl;
@@ -258,6 +269,30 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 preference.getContext().startActivity(browserIntent);
                 return true;
             }
+            else if (preference.getKey().equals("topPosition")){
+                Activity activity = getActivity();
+                Intent intent = new Intent(activity, DynamicActivity.class);
+                intent.putExtra("positionKey", preference.getKey());
+                intent.putExtra("positionTitle", activity.getResources().getString(R.string.pref_title_topPosition));
+                activity.startActivityForResult(intent, 1);
+                return true;
+            }
+            else if (preference.getKey().equals("midPosition")){
+                Activity activity = getActivity();
+                Intent intent = new Intent(activity, DynamicActivity.class);
+                intent.putExtra("positionKey", preference.getKey());
+                intent.putExtra("positionTitle", activity.getResources().getString(R.string.pref_title_midPosition));
+                activity.startActivityForResult(intent, 2);
+                return true;
+            }
+            else if (preference.getKey().equals("botPosition")){
+                Activity activity = getActivity();
+                Intent intent = new Intent(activity, DynamicActivity.class);
+                intent.putExtra("positionKey", preference.getKey());
+                intent.putExtra("positionTitle", activity.getResources().getString(R.string.pref_title_botPosition));
+                activity.startActivityForResult(intent, 3);
+                return true;
+            }
             return false;
         }
     };
@@ -382,6 +417,46 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         preference.setOnPreferenceClickListener(onPreferenceClickListener);
     }
 
+    private static void setPositionSummarys(Preference preference, String key, SliderPositionValue val){
+
+        if (val != null){
+            ArrayList<SliderAction> actions = val.getActions();
+            int count = actions.size();
+            String summary = "";
+
+            for (int i = 0; i < count; i++) {
+                String actionName = actions.get(i).getDisplayName();
+                String parameters = "";
+
+                Set<Map.Entry<String, String>> set2 = actions.get(i).getStringParameters().entrySet();
+                for (Map.Entry<String, String> stringparam : set2) {
+                    parameters = parameters.equals("") ? stringparam.getValue() : parameters + ", " + stringparam.getValue();
+                }
+
+                Set<Map.Entry<String, Integer>> set3 = actions.get(i).getIntParameters().entrySet();
+                for (Map.Entry<String, Integer> intparam : set3) {
+                    parameters = parameters.equals("") ? intparam.getValue() + "" : parameters + ", " + intparam.getValue();
+                }
+
+                Set<Map.Entry<String, Boolean>> set = actions.get(i).getBooleanParameters().entrySet();
+                for (Map.Entry<String, Boolean> boolparam : set) {
+                    parameters = parameters.equals("") ? boolparam.getValue() + "" : parameters + ", " + boolparam.getValue();
+                }
+
+                summary = summary.equals("") ? actionName : summary + "; " + actionName;
+
+                if (!parameters.equals("")){
+                    summary = summary + " [" + parameters + "]";
+                }
+            }
+
+
+            preference.setSummary(summary);
+        }
+        else
+            preference.setSummary("");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -396,6 +471,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new GeneralPreferenceFragment())
                 .commit();
+
+        Gson gson = new Gson();
+        String json = settings.getString("topPosition", "");
+        topPositionSliderVal = gson.fromJson(json, SliderPositionValue.class);
+        gson = new Gson();
+        json = settings.getString("midPosition", "");
+        midPositionSliderVal = gson.fromJson(json, SliderPositionValue.class);
+        gson = new Gson();
+        json = settings.getString("botPosition", "");
+        botPositionSliderVal = gson.fromJson(json, SliderPositionValue.class);
 
         //updateResources(this, settings.getString("language", "system"));
     }
@@ -526,9 +611,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference("usedOS"));
 
             //bindsummary for multilistPreferences
+            /*
             bindPreferenceSummaryToValueForMultiList(findPreference("topPosition"));
             bindPreferenceSummaryToValueForMultiList(findPreference("midPosition"));
             bindPreferenceSummaryToValueForMultiList(findPreference("botPosition"));
+            */
 
             //bindsummary for TextPreferences
             bindPreferenceSummaryToValue(findPreference("extendedVolumeControlAllNotText"));
@@ -542,14 +629,45 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             //bindPreferenceBooleanValueAlert(findPreference("headPhoneMode"));
 
             //do stuff when preference get clicked
+
+            topPosition = findPreference("topPosition");
+            midPosition = findPreference("midPosition");
+            botPosition = findPreference("botPosition");
+
+
             bindPreferenceOnClick(findPreference("donate"));
+            bindPreferenceOnClick(topPosition);
+            bindPreferenceOnClick(midPosition);
+            bindPreferenceOnClick(botPosition);
+
+            setPositionSummarys(topPosition, "topPosition", topPositionSliderVal);
+            setPositionSummarys(midPosition, "midPosition", midPositionSliderVal);
+            setPositionSummarys(botPosition, "botPosition", botPositionSliderVal);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1){
+        if (requestCode == 1){ //top
+            if (resultCode == Activity.RESULT_OK) {
+                topPosition.setSummary(data.getStringExtra("summary"));
+            }
+        }
+        else if (requestCode == 2){ //mid
+            if (resultCode == Activity.RESULT_OK) {
+                midPosition.setSummary(data.getStringExtra("summary"));
+            }
+        }
+        else if (requestCode == 3){ //bot
+            if (resultCode == Activity.RESULT_OK) {
+                botPosition.setSummary(data.getStringExtra("summary"));
+            }
+        }
+
+
+        /*if (requestCode == 1){
             if (resultCode == Activity.RESULT_OK){
+
                 SharedPreferences settings = startAppPreference.getContext().getSharedPreferences("com.dev.weathon.customalertslider_preferences", MODE_PRIVATE);
                 Set<String> emptySet = Collections.emptySet();
                 Set<String> values = settings.getStringSet(startAppPreference.getKey(), emptySet);
@@ -564,6 +682,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 else
                     startAppPreference.setSummary(startAppPreference.getContext().getResources().getString(R.string.noAction));
             }
-        }
+        }*/
     }
 }

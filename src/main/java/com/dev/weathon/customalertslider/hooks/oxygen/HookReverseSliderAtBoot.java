@@ -12,6 +12,9 @@ import android.util.Log;
 
 import com.crossbowffs.remotepreferences.RemotePreferences;
 import com.dev.weathon.customalertslider.HookUtils;
+import com.dev.weathon.customalertslider.SliderAction;
+import com.dev.weathon.customalertslider.SliderPositionValue;
+import com.google.gson.Gson;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -55,52 +58,36 @@ public class HookReverseSliderAtBoot implements IXposedHookLoadPackage {
                         int newNotificationMode = (int) param.args[0];
                         sendSliderChangeIntent(AndroidAppHelper.currentApplication(), newNotificationMode, true);
 
-                        Set<String> emptySet = Collections.emptySet();
+                        ArrayList<SliderAction> positionActions = null;
 
-                        if (newNotificationMode == HookUtils.TotalSilenceZenValOxygen) {
-                            XposedBridge.log("newNotificationMode=TotalSilenceZenValOxygen" + newNotificationMode);
-                            ArrayList<HookUtils.MyEnum> TopPositionActions = new ArrayList<HookUtils.MyEnum>();
-                            for (String s : settings.getStringSet("topPosition", emptySet))
-                                TopPositionActions.add(HookUtils.MyEnum.valueOf(s));
+                        if(newNotificationMode == HookUtils.TotalSilenceZenValOxygen){
+                            positionActions = getActionsForPosition("topPosition", settings);
+                        }
+                        else if(newNotificationMode == HookUtils.PriorityZenValOxygen){
+                            positionActions = getActionsForPosition("midPosition", settings);
+                        }
+                        else if(newNotificationMode == HookUtils.AllNotificationZenValOxygen){
+                            positionActions = getActionsForPosition("botPosition", settings);
+                        }
 
-                            if (TopPositionActions.contains(HookUtils.MyEnum.ALL_NOTIFICATIONS))
+                        boolean oneOfTheZenModeSwitches = false;
+
+                        for(SliderAction s : positionActions){
+                            if (s.getId().equalsIgnoreCase(HookUtils.MyEnum.ALL_NOTIFICATIONS.toString())){
+                                oneOfTheZenModeSwitches = true;
                                 notificationModeToChange = HookUtils.AllNotificationZenValOxygen;
-                            else if (TopPositionActions.contains(HookUtils.MyEnum.PRIORITY))
+                            }
+                            else if (s.getId().equalsIgnoreCase(HookUtils.MyEnum.PRIORITY.toString())){
+                                oneOfTheZenModeSwitches = true;
                                 notificationModeToChange = HookUtils.PriorityZenValOxygen;
-                            else if (TopPositionActions.contains(HookUtils.MyEnum.ALARMS_ONLY) || TopPositionActions.contains(HookUtils.MyEnum.TOTAL_SILENCE))
+                            }
+                            else if (s.getId().equalsIgnoreCase(HookUtils.MyEnum.ALARMS_ONLY.toString()) || s.getId().equalsIgnoreCase(HookUtils.MyEnum.TOTAL_SILENCE.toString())){
+                                oneOfTheZenModeSwitches = true;
                                 notificationModeToChange = HookUtils.TotalSilenceZenValOxygen;
-                            else if (!settings.getBoolean("extendedZenModeControl", false))
-                                param.setResult(null);
-
-                        } else if (newNotificationMode == HookUtils.PriorityZenValOxygen) {
-                            XposedBridge.log("newNotificationMode=PriorityZenValOxygen" + newNotificationMode);
-                            ArrayList<HookUtils.MyEnum> MidPositionActions = new ArrayList<HookUtils.MyEnum>();
-                            for (String s : settings.getStringSet("midPosition", emptySet))
-                                MidPositionActions.add(HookUtils.MyEnum.valueOf(s));
-
-                            if (MidPositionActions.contains(HookUtils.MyEnum.ALL_NOTIFICATIONS))
-                                notificationModeToChange = HookUtils.AllNotificationZenValOxygen;
-                            else if (MidPositionActions.contains(HookUtils.MyEnum.PRIORITY))
-                                notificationModeToChange = HookUtils.PriorityZenValOxygen;
-                            else if (MidPositionActions.contains(HookUtils.MyEnum.ALARMS_ONLY) || MidPositionActions.contains(HookUtils.MyEnum.TOTAL_SILENCE))
-                                notificationModeToChange = HookUtils.TotalSilenceZenValOxygen;
-                            else if (!settings.getBoolean("extendedZenModeControl", false))
-                                param.setResult(null);
-
-                        } else if (newNotificationMode == HookUtils.AllNotificationZenValOxygen) {
-                            XposedBridge.log("newNotificationMode=AllNotificationZenValOxygen" + newNotificationMode);
-                            ArrayList<HookUtils.MyEnum> BotPositionActions = new ArrayList<HookUtils.MyEnum>();
-                            for (String s : settings.getStringSet("botPosition", emptySet))
-                                BotPositionActions.add(HookUtils.MyEnum.valueOf(s));
-
-                            if (BotPositionActions.contains(HookUtils.MyEnum.ALL_NOTIFICATIONS))
-                                notificationModeToChange = HookUtils.AllNotificationZenValOxygen;
-                            else if (BotPositionActions.contains(HookUtils.MyEnum.PRIORITY))
-                                notificationModeToChange = HookUtils.PriorityZenValOxygen;
-                            else if (BotPositionActions.contains(HookUtils.MyEnum.ALARMS_ONLY) || BotPositionActions.contains(HookUtils.MyEnum.TOTAL_SILENCE))
-                                notificationModeToChange = HookUtils.TotalSilenceZenValOxygen;
-                            else if (!settings.getBoolean("extendedZenModeControl", false))
-                                    param.setResult(null);
+                            }
+                        }
+                        if (!oneOfTheZenModeSwitches && !settings.getBoolean("extendedZenModeControl", false)){
+                            param.setResult(null);
                         }
 
                         if (settings.getBoolean("extendedZenModeControl", false)){
@@ -155,5 +142,16 @@ public class HookReverseSliderAtBoot implements IXposedHookLoadPackage {
         changeIntent.putExtra("comingFromBoot", comingFromBoot);
 
         context.sendBroadcast(changeIntent);
+    }
+
+    private ArrayList<SliderAction> getActionsForPosition(String pos, SharedPreferences settings){
+        Gson gson = new Gson();
+        String json = settings.getString(pos, "");
+        SliderPositionValue obj = gson.fromJson(json, SliderPositionValue.class);
+        if (obj != null) {
+            ArrayList<SliderAction> actions = obj.getActions();
+            return actions;
+        }
+        return new ArrayList<SliderAction>();
     }
 }
