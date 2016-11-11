@@ -1,6 +1,9 @@
 package com.dev.weathon.customalertslider;
 
 import android.app.AndroidAppHelper;
+import android.app.KeyguardManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +12,7 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.telephony.SubscriptionManager;
@@ -81,7 +85,9 @@ public final class HookUtils { //final because the class should be handled like 
         WIFI(13),
         AUDIO_VOLUME(14),
         TOAST(15),
-        BATTERY_SAVING(16);
+        BATTERY_SAVING(16),
+        BATTERY_SAVING_AUTOMATIC(17),
+        LOCK_SCREEN_NOTIFICATION(18);
 
         private final int value;
 
@@ -208,6 +214,30 @@ public final class HookUtils { //final because the class should be handled like 
                             enableBatterySaving(true);
                         else if (param.getValue().equalsIgnoreCase("off"))
                             enableBatterySaving(false);
+                    }
+                }
+            }
+            if (s.getId().equalsIgnoreCase(MyEnum.BATTERY_SAVING_AUTOMATIC.toString())){
+                for (Map.Entry<String, String> param : stringParams) {
+                    if (param.getKey().equalsIgnoreCase("mode")){
+                        if (param.getValue().equalsIgnoreCase("BATTERY_SAVING_NEVER"))
+                            setBatterySavingAutomatic(0);
+                        else if (param.getValue().equalsIgnoreCase("BATTERY_SAVING_5"))
+                            setBatterySavingAutomatic(5);
+                        else if (param.getValue().equalsIgnoreCase("BATTERY_SAVING_15"))
+                            setBatterySavingAutomatic(15);
+                    }
+                }
+            }
+            if (s.getId().equalsIgnoreCase(MyEnum.LOCK_SCREEN_NOTIFICATION.toString())){
+                for (Map.Entry<String, String> param : stringParams) {
+                    if (param.getKey().equalsIgnoreCase("mode")){
+                        if (param.getValue().equalsIgnoreCase("SHOW_ALL_NOTIFICATIONS"))
+                            setLockScreenShowNotifications(0);
+                        else if (param.getValue().equalsIgnoreCase("SHOW_ALL_BUT_PRIVATE_NOTIFICATIONS"))
+                            setLockScreenShowNotifications(1);
+                        else if (param.getValue().equalsIgnoreCase("DONT_SHOW_NOTIFICATIONS"))
+                            setLockScreenShowNotifications(2);
                     }
                 }
             }
@@ -343,6 +373,13 @@ public final class HookUtils { //final because the class should be handled like 
             Log.e("CustomAlertSlider", "enableBatterySavingException: " + e.getMessage());
         }
     }
+    public static void setBatterySavingAutomatic(int mode){
+        try {
+            Runtime.getRuntime().exec("settings put global low_power_trigger_level " + mode);
+        } catch (IOException e) {
+            Log.e("CustomAlertSlider", "setBatterySavingAutomatic: " + "mode : " + e.getMessage());
+        }
+    }
     public static void setDisplayBrightnessModeAuto(Context context){
         Settings.System.putInt(context.getContentResolver(),Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
     }
@@ -367,7 +404,23 @@ public final class HookUtils { //final because the class should be handled like 
             Log.e("CustomAlertSlider", "Error setting audio", ex);
         }
     }
-
+    public static void setLockScreenShowNotifications(int mode){
+        try {
+            if (mode == 0){ //Show All
+                Runtime.getRuntime().exec("settings put secure lock_screen_show_notifications 1");
+                Runtime.getRuntime().exec("settings put secure lock_screen_allow_private_notifications 1");
+            }
+            else if (mode == 1){ //Show all but private
+                Runtime.getRuntime().exec("settings put secure lock_screen_show_notifications 1");
+                Runtime.getRuntime().exec("settings put secure lock_screen_allow_private_notifications 0");
+            }
+            else if (mode == 2){ //Show none
+                Runtime.getRuntime().exec("settings put secure lock_screen_show_notifications 0");
+            }
+        } catch (Exception e) {
+            Log.e("CustomAlertSlider", "setLockScreenShowNotifications: " + mode + " : " + e.getMessage());
+        }
+    }
     public static void showToast(Context context, String text) {
         LinearLayout linLayout = new LinearLayout(context);
         linLayout.setOrientation(LinearLayout.VERTICAL);
@@ -413,5 +466,6 @@ public final class HookUtils { //final because the class should be handled like 
     public static final int PriorityZenVal = 1;
     public static final int TotalSilenceZenVal = 2;
     public static final int AlarmsOnlyZenVal = 3;
+
 }
 

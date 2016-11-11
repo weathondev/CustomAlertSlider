@@ -42,11 +42,13 @@
         <item>Total Silence</item>
         <item>Airplane mode</item>
         <item>Audio Volume</item>
+        <item>Automatic Battery Saver</item>
         <item>Battery Saver</item>
         <item>Bluetooth</item>
         <item>Flashlight</item>
         <item>GPS</item>
         <item>Mobile Data</item>
+        <item>Notifications on lock screen</item>
         <item>Preferred Network</item>
         <item>Screen Orientation</item>
         <item>Screen Brightness</item>
@@ -61,11 +63,13 @@
         <item>TOTAL_SILENCE</item>
         <item>AIRPLANE</item>
         <item>@string/AUDIO_VOLUME</item>
+        <item>@string/BATTERY_SAVING_AUTOMATIC</item>
         <item>@string/BATTERY_SAVING</item>
         <item>BLUETOOTH</item>
         <item>FLASHLIGHT</item>
         <item>GPS</item>
         <item>MOBILE_DATA</item>
+        <item>@string/LOCK_SCREEN_NOTIFICATION</item>
         <item>PREFER_NETWORK</item>
         <item>SCREEN_ORIENTATION</item>
         <item>SCREEN_BRIGHTNESS</item>
@@ -97,6 +101,8 @@
         <item>STARTAPP</item>
         <item>WIFI</item>
         <item>@string/BATTERY_SAVING</item>
+        <item>@string/BATTERY_SAVING_AUTOMATIC</item>
+        <item>@string/LOCK_SCREEN_NOTIFICATION</item>
     </string-array>
 
 
@@ -158,6 +164,32 @@
 
     <string name="screen_brightness_level">LEVEL</string>
 
+    <string-array name="lock_screen_notification_titles">
+        <item>Show complete notifications</item>
+        <item>Show notifications but hide sensitive content</item>
+        <item>Don\'t show notifications</item>
+    </string-array>
+    <string-array name="lock_screen_notification_values">
+        <item>@string/SHOW_ALL_NOTIFICATIONS</item>
+        <item>@string/SHOW_ALL_BUT_PRIVATE_NOTIFICATIONS</item>
+        <item>@string/DONT_SHOW_NOTIFICATIONS</item>
+    </string-array>
+
+    <string-array name="battery_saver_automatic_titles">
+        <item>Never</item>
+        <item>At 5% battery</item>
+        <item>At 15% battery</item>
+    </string-array>
+    <string-array name="battery_saver_automatic_values">
+        <item>@string/BATTERY_SAVING_NEVER</item>
+        <item>@string/BATTERY_SAVING_5</item>
+        <item>@string/BATTERY_SAVING_15</item>
+    </string-array>
+
+    <string name="BATTERY_SAVING_NEVER">BATTERY_SAVING_NEVER</string>
+    <string name="BATTERY_SAVING_5">BATTERY_SAVING_5</string>
+    <string name="BATTERY_SAVING_15">BATTERY_SAVING_15</string>
+
     <string-array name="volume_titles">
         <item>Notification volume</item>
         <item>Ringer Volume</item>
@@ -185,6 +217,7 @@
     <string name="AUDIO_VOLUME">AUDIO_VOLUME</string>
     <string name="STARTAPP">STARTAPP</string>
     <string name="BATTERY_SAVING">BATTERY_SAVING</string>
+    <string name="BATTERY_SAVING_AUTOMATIC">BATTERY_SAVING_AUTOMATIC</string>
 
 
 
@@ -307,6 +340,14 @@
         <item>Wifi</item>
         <item>Toast</item>
         <item>Battery saver</item>
+        <item>Notifications on lock screen</item>
+        <item>Show complete notifications</item>
+        <item>Show notifications but hide sensitive content</item>
+        <item>Don\'t show notifications</item>
+        <item>Automatic Battery saver</item>
+        <item>Never</item>
+        <item>At 5% battery</item>
+        <item>At 15% battery</item>
     </string-array>
 
     <string-array name="key_to_val_keys">
@@ -344,9 +385,21 @@
         <item>WIFI</item>
         <item>@string/TOAST</item>
         <item>@string/BATTERY_SAVING</item>
+        <item>@string/LOCK_SCREEN_NOTIFICATION</item>
+        <item>@string/SHOW_ALL_NOTIFICATIONS</item>
+        <item>@string/SHOW_ALL_BUT_PRIVATE_NOTIFICATIONS</item>
+        <item>@string/DONT_SHOW_NOTIFICATIONS</item>
+        <item>@string/BATTERY_SAVING_AUTOMATIC</item>
+        <item>@string/BATTERY_SAVING_NEVER</item>
+        <item>@string/BATTERY_SAVING_5</item>
+        <item>@string/BATTERY_SAVING_15</item>
     </string-array>
     <string name="editTextHint">type your custom toast text here...</string>
 
     <string name="TOAST">TOAST</string>
+    <string name="LOCK_SCREEN_NOTIFICATION">LOCK_SCREEN_NOTIFICATION</string>
+    <string name="SHOW_ALL_NOTIFICATIONS">SHOW_ALL_NOTIFICATIONS</string>
+    <string name="SHOW_ALL_BUT_PRIVATE_NOTIFICATIONS">SHOW_ALL_BUT_PRIVATE_NOTIFICATIONS</string>
+    <string name="DONT_SHOW_NOTIFICATIONS">DONT_SHOW_NOTIFICATIONS</string>
 
 </resources>
