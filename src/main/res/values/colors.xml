@@ -4,5 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <color name="black_overlay">#66000000</color>
+    <color name="black_overlay">#212121</color>
+
+    <color name="customToastText">#FFFFFF</color>
 </resources>

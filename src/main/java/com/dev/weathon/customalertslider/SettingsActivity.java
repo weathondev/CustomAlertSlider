@@ -58,6 +58,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -423,6 +424,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             ArrayList<SliderAction> actions = val.getActions();
             int count = actions.size();
             String summary = "";
+            Context context = preference.getContext();
 
             for (int i = 0; i < count; i++) {
                 String actionName = actions.get(i).getDisplayName();
@@ -430,7 +432,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
                 Set<Map.Entry<String, String>> set2 = actions.get(i).getStringParameters().entrySet();
                 for (Map.Entry<String, String> stringparam : set2) {
-                    parameters = parameters.equals("") ? stringparam.getValue() : parameters + ", " + stringparam.getValue();
+                    parameters = parameters.equals("") ? keyToValConvert(context, stringparam.getValue()) : parameters + ", " + keyToValConvert(context, stringparam.getValue());
                 }
 
                 Set<Map.Entry<String, Integer>> set3 = actions.get(i).getIntParameters().entrySet();
@@ -586,6 +588,20 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 || GeneralPreferenceFragment.class.getName().equals(fragmentName);
     }
 
+
+    private static String keyToValConvert(Context context, String key){
+        String val = key;
+
+        try{
+            int keyPos = Arrays.asList(context.getResources().getStringArray(R.array.key_to_val_keys)).indexOf(key);
+            val = context.getResources().getStringArray(R.array.key_to_val_vals)[keyPos];
+        }
+        catch (Exception e){
+            return val;
+        }
+        return val;
+    }
+
     /**
      * This fragment shows general preferences only. It is used when the
      * activity is showing a two-pane settings UI.
@@ -684,4 +700,5 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
         }*/
     }
+
 }

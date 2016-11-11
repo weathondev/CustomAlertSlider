@@ -74,8 +74,10 @@
 
         <activity android:name=".AllAppsActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden"/>
         <activity android:name=".DynamicActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden"/>
-        <activity android:name=".DynamicSubActivity" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden"/>
-        <activity android:name=".DynamicSubActivityComboSlider" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".DynamicSubActivityComboBox" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".DynamicSubActivityScreenBrightness" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".DynamicSubActivityAudioVolume" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden"/>
+        <activity android:name=".DynamicSubActivityTextBox" android:screenOrientation="portrait" android:configChanges="orientation|keyboardHidden"/>
 
 
         <activity-alias

@@ -4,15 +4,27 @@ import android.app.AndroidAppHelper;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
+import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.dev.weathon.customalertslider.tasker.TaskerPlugin;
+
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.robv.android.xposed.XposedBridge;
+import de.robv.android.xposed.XposedHelpers;
 
 /**
  * Created by Joshua on 02.09.2016.
@@ -65,7 +78,10 @@ public final class HookUtils { //final because the class should be handled like 
         SCREEN_ORIENTATION(10),
         SCREEN_BRIGHTNESS(11),
         STARTAPP(12),
-        WIFI(13);
+        WIFI(13),
+        AUDIO_VOLUME(14),
+        TOAST(15),
+        BATTERY_SAVING(16);
 
         private final int value;
 
@@ -92,6 +108,13 @@ public final class HookUtils { //final because the class should be handled like 
                 Log.e("CustomAlertSlider", param.getKey());
             }
 
+            if (s.getId().equalsIgnoreCase(MyEnum.TOAST.toString())){
+                for (Map.Entry<String, String> param : stringParams) {
+                    if (param.getKey().equalsIgnoreCase("text")){
+                        showToast(context, param.getValue());
+                    }
+                }
+            }
             if (s.getId().equalsIgnoreCase(MyEnum.AIRPLANE.toString())){
                 for (Map.Entry<String, String> param : stringParams) {
                     if (param.getKey().equalsIgnoreCase("mode")){
@@ -172,9 +195,19 @@ public final class HookUtils { //final because the class should be handled like 
                 for (Map.Entry<String, String> param : stringParams) {
                     if (param.getKey().equalsIgnoreCase("mode")){
                         if (param.getValue().equalsIgnoreCase("AUTO"))
-                            enableAutoScreenRotation(true);
+                            enableAutoScreenRotation(context, true);
                         else if (param.getValue().equalsIgnoreCase("PORTRAIT"))
-                            enableAutoScreenRotation(false);
+                            enableAutoScreenRotation(context, false);
+                    }
+                }
+            }
+            if (s.getId().equalsIgnoreCase(MyEnum.BATTERY_SAVING.toString())){
+                for (Map.Entry<String, String> param : stringParams) {
+                    if (param.getKey().equalsIgnoreCase("mode")){
+                        if (param.getValue().equalsIgnoreCase("on"))
+                            enableBatterySaving(true);
+                        else if (param.getValue().equalsIgnoreCase("off"))
+                            enableBatterySaving(false);
                     }
                 }
             }
@@ -195,6 +228,19 @@ public final class HookUtils { //final because the class should be handled like 
                 for (Map.Entry<String, String> param : stringParams) {
                     if (param.getKey().equalsIgnoreCase("apptostart")){
                         HookUtils.startApp(context, param.getValue());
+                    }
+                }
+            }
+            if (s.getId().equalsIgnoreCase(MyEnum.AUDIO_VOLUME.toString())){
+                String volumeType = "";
+                for (Map.Entry<String, String> param : stringParams) {
+                    if (param.getKey().equalsIgnoreCase("mode")){
+                        volumeType = param.getValue();
+                    }
+                }
+                for (Map.Entry<String, Integer> param : intParams) {
+                    if (param.getKey().equalsIgnoreCase("volume")){
+                        setAudioVolume(context, volumeType, param.getValue());
                     }
                 }
             }
@@ -287,16 +333,70 @@ public final class HookUtils { //final because the class should be handled like 
 
         wifiManager.setWifiEnabled(enable);
     }
-    public static void enableAutoScreenRotation(boolean enable){
-        Settings.System.putInt(AndroidAppHelper.currentApplication().getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, enable ? 1 : 0);
+    public static void enableAutoScreenRotation(Context context, boolean enable){
+        Settings.System.putInt(context.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, enable ? 1 : 0);
     }
-
+    public static void enableBatterySaving(boolean enable){
+        try {
+            Runtime.getRuntime().exec("settings put global low_power " + (enable == true ? 1 : 0));
+        } catch (IOException e) {
+            Log.e("CustomAlertSlider", "enableBatterySavingException: " + e.getMessage());
+        }
+    }
     public static void setDisplayBrightnessModeAuto(Context context){
         Settings.System.putInt(context.getContentResolver(),Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
     }
     public static void setDisplayBrightness(Context context, int brightness){
         Settings.System.putInt(context.getContentResolver(),Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
         Settings.System.putInt(context.getContentResolver(),Settings.System.SCREEN_BRIGHTNESS, brightness);
+    }
+    public static void setAudioVolume(Context context, String volumeType, int volume){
+        try {
+            AudioManager mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            if (volumeType.equalsIgnoreCase("STREAM_MUSIC"))
+                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0);
+            else if (volumeType.equalsIgnoreCase("STREAM_NOTIFICATION"))
+                mAudioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, volume, 0);
+            else if (volumeType.equalsIgnoreCase("STREAM_RING"))
+                mAudioManager.setStreamVolume(AudioManager.STREAM_RING, volume, 0);
+            else if (volumeType.equalsIgnoreCase("STREAM_ALARM"))
+                mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, volume, 0);
+        }
+        catch (Exception ex)
+        {
+            Log.e("CustomAlertSlider", "Error setting audio", ex);
+        }
+    }
+
+    public static void showToast(Context context, String text) {
+        LinearLayout linLayout = new LinearLayout(context);
+        linLayout.setOrientation(LinearLayout.VERTICAL);
+        linLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        linLayout.setPadding(20, 20, 20, 20);
+        linLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+        linLayout.setBackgroundColor(Color.parseColor("#212121"));
+        final float scale = context.getResources().getDisplayMetrics().density;
+        int height = (int) (100 * scale + 0.5f);
+        int width = (int) (224 * scale + 0.5f);
+        linLayout.setMinimumHeight(height);
+        linLayout.setMinimumWidth(width);
+
+        TextView tv = new TextView(context);
+        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        llp.setMargins(0, 16, 0, 0);
+        tv.setLayoutParams(llp);
+        tv.setGravity(Gravity.CENTER);
+        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        tv.setTextSize(14);
+        tv.setTextColor(Color.parseColor("#FFFFFF"));
+        tv.setText(text);
+
+        linLayout.addView(tv, 0);
+
+        Toast toast = new Toast(context);
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, -25);
+        toast.setView(linLayout);
+        toast.show();
     }
 
     public static final String AllNotificationHardwareVal = "603";

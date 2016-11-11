@@ -41,6 +41,8 @@
         <item>Alarms Only</item>
         <item>Total Silence</item>
         <item>Airplane mode</item>
+        <item>Audio Volume</item>
+        <item>Battery Saver</item>
         <item>Bluetooth</item>
         <item>Flashlight</item>
         <item>GPS</item>
@@ -48,6 +50,7 @@
         <item>Preferred Network</item>
         <item>Screen Orientation</item>
         <item>Screen Brightness</item>
+        <item>Show Custom Toast</item>
         <item>@string/startappstring</item>
         <item>Wifi</item>
     </string-array>
@@ -57,6 +60,8 @@
         <item>ALARMS_ONLY</item>
         <item>TOTAL_SILENCE</item>
         <item>AIRPLANE</item>
+        <item>@string/AUDIO_VOLUME</item>
+        <item>@string/BATTERY_SAVING</item>
         <item>BLUETOOTH</item>
         <item>FLASHLIGHT</item>
         <item>GPS</item>
@@ -64,6 +69,7 @@
         <item>PREFER_NETWORK</item>
         <item>SCREEN_ORIENTATION</item>
         <item>SCREEN_BRIGHTNESS</item>
+        <item>TOAST</item>
         <item>STARTAPP</item>
         <item>WIFI</item>
     </string-array>
@@ -90,6 +96,7 @@
         <item>SCREEN_ORIENTATION</item>
         <item>STARTAPP</item>
         <item>WIFI</item>
+        <item>@string/BATTERY_SAVING</item>
     </string-array>
 
 
@@ -151,12 +158,34 @@
 
     <string name="screen_brightness_level">LEVEL</string>
 
+    <string-array name="volume_titles">
+        <item>Notification volume</item>
+        <item>Ringer Volume</item>
+        <item>Music Volume</item>
+        <item>Alarm Volume</item>
+    </string-array>
+    <string-array name="volume_values">
+        <item>@string/volume_notification</item>
+        <item>@string/volume_ring</item>
+        <item>@string/volume_music</item>
+        <item>@string/volume_alarm</item>
+    </string-array>
+
+    <string name="volume_notification">STREAM_NOTIFICATION</string>
+    <string name="volume_ring">STREAM_RING</string>
+    <string name="volume_music">STREAM_MUSIC</string>
+    <string name="volume_alarm">STREAM_ALARM</string>
+
+
 
     <string name="GPS">GPS</string>
     <string name="PREFER_NETWORK">PREFER_NETWORK</string>
     <string name="SCREEN_ORIENTATION">SCREEN_ORIENTATION</string>
     <string name="SCREEN_BRIGHTNESS">SCREEN_BRIGHTNESS</string>
+    <string name="AUDIO_VOLUME">AUDIO_VOLUME</string>
     <string name="STARTAPP">STARTAPP</string>
+    <string name="BATTERY_SAVING">BATTERY_SAVING</string>
+
 
 
     <string name="AlertDialogMessage">If you reverse the alert slider positions, there is a graphical issue in the volume control after rebooting the phone.
@@ -242,4 +271,82 @@
     <string name="button_delete_row_description">Delete</string>
     <string name="button_configure_row_description">Configure</string>
     <string name="savedToast">Saved</string>
+
+    <string-array name="key_to_val_vals">
+        <item>On</item>
+        <item>Off</item>
+        <item>Notification volume</item>
+        <item>Ringer Volume</item>
+        <item>Music Volume</item>
+        <item>Alarm Volume</item>
+        <item>High Accuracy</item>
+        <item>Device Only</item>
+        <item>Battery Saving</item>
+        <item>OFF</item>
+        <item>2G</item>
+        <item>3G</item>
+        <item>4G</item>
+        <item>Auto</item>
+        <item>Portrait</item>
+        <item>Auto</item>
+        <item>Level</item>
+        <item>All Notifications</item>
+        <item>Priority/Vibrate</item>
+        <item>Alarms Only</item>
+        <item>Total Silence</item>
+        <item>Airplane mode</item>
+        <item>Audio Volume</item>
+        <item>Bluetooth</item>
+        <item>Flashlight</item>
+        <item>GPS</item>
+        <item>Mobile Data</item>
+        <item>Preferred Network</item>
+        <item>Screen Orientation</item>
+        <item>Screen Brightness</item>
+        <item>@string/startappstring</item>
+        <item>Wifi</item>
+        <item>Toast</item>
+        <item>Battery saver</item>
+    </string-array>
+
+    <string-array name="key_to_val_keys">
+        <item>ON</item>
+        <item>OFF</item>
+        <item>@string/volume_notification</item>
+        <item>@string/volume_ring</item>
+        <item>@string/volume_music</item>
+        <item>@string/volume_alarm</item>
+        <item>HIGH_ACCURACY</item>
+        <item>DEVICE_ONLY</item>
+        <item>BATTERY_SAVING</item>
+        <item>GPS_OFF</item>
+        <item>2G</item>
+        <item>3G</item>
+        <item>4G</item>
+        <item>AUTO</item>
+        <item>PORTRAIT</item>
+        <item>AUTO</item>
+        <item>LEVEL</item>
+        <item>ALL_NOTIFICATIONS</item>
+        <item>PRIORITY</item>
+        <item>ALARMS_ONLY</item>
+        <item>TOTAL_SILENCE</item>
+        <item>AIRPLANE</item>
+        <item>@string/AUDIO_VOLUME</item>
+        <item>BLUETOOTH</item>
+        <item>FLASHLIGHT</item>
+        <item>GPS</item>
+        <item>MOBILE_DATA</item>
+        <item>PREFER_NETWORK</item>
+        <item>SCREEN_ORIENTATION</item>
+        <item>SCREEN_BRIGHTNESS</item>
+        <item>STARTAPP</item>
+        <item>WIFI</item>
+        <item>@string/TOAST</item>
+        <item>@string/BATTERY_SAVING</item>
+    </string-array>
+    <string name="editTextHint">type your custom toast text here...</string>
+
+    <string name="TOAST">TOAST</string>
+
 </resources>

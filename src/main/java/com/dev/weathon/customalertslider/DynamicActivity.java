@@ -5,19 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.MultiSelectListPreference;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.transition.Slide;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -26,11 +20,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,13 +59,8 @@ public class DynamicActivity extends AppCompatActivity {
 
             for (int i = 0; i < count; i++) {
                 inflateEditRow(actions.get(i));
-
-
             }
         }
-
-
-
     }
 
     // onClick handler for the "Add new" button;
@@ -158,7 +144,17 @@ public class DynamicActivity extends AppCompatActivity {
         SliderAction action = (SliderAction) spinner.getSelectedItem();
 
         if (getResources().getString(R.string.SCREEN_BRIGHTNESS).equals(selectedKey)){
-            Intent i = new Intent(this, DynamicSubActivityComboSlider.class);
+            Intent i = new Intent(this, DynamicSubActivityScreenBrightness.class);
+            i.putExtra("selectedKey", selectedKey);
+            i.putExtra("selectedValue", selectedValue);
+            i.putExtra("positionKey", positionKey);
+            i.putExtra("actionKey", action.getId());
+            lastConfigureOpenedTextViewSpinner = (TextView) spinnerParent.getChildAt(1);
+            lastConfigureOpenedSpinner = (Spinner) spinner;
+            startActivityForResult(i, 1);
+        }
+        else if (getResources().getString(R.string.AUDIO_VOLUME).equals(selectedKey)){
+            Intent i = new Intent(this, DynamicSubActivityAudioVolume.class);
             i.putExtra("selectedKey", selectedKey);
             i.putExtra("selectedValue", selectedValue);
             i.putExtra("positionKey", positionKey);
@@ -177,8 +173,18 @@ public class DynamicActivity extends AppCompatActivity {
             lastConfigureOpenedSpinner = (Spinner) spinner;
             startActivityForResult(i, 2);
         }
+        else if (getResources().getString(R.string.TOAST).equals(selectedKey)){
+            Intent i = new Intent(this, DynamicSubActivityTextBox.class);
+            i.putExtra("selectedKey", selectedKey);
+            i.putExtra("selectedValue", selectedValue);
+            i.putExtra("positionKey", positionKey);
+            i.putExtra("actionKey", action.getId());
+            lastConfigureOpenedTextViewSpinner = (TextView) spinnerParent.getChildAt(1);
+            lastConfigureOpenedSpinner = (Spinner) spinner;
+            startActivityForResult(i, 3);
+        }
         else{
-            Intent i = new Intent(this, DynamicSubActivity.class);
+            Intent i = new Intent(this, DynamicSubActivityComboBox.class);
             i.putExtra("selectedKey", selectedKey);
             i.putExtra("selectedValue", selectedValue);
             i.putExtra("positionKey", positionKey);
@@ -226,20 +232,19 @@ public class DynamicActivity extends AppCompatActivity {
 
             Set<Map.Entry<String, String>> set2 = action.getStringParameters().entrySet();
             for (Map.Entry<String, String> stringparam : set2) {
-                if (stringparam.getKey().equalsIgnoreCase("mode")){
-                    textViewText = stringparam.getValue();
-                }
-                else if (stringparam.getKey().equalsIgnoreCase("apptostart")){
-                    textViewText = stringparam.getValue();
+                if (stringparam.getKey().equalsIgnoreCase("mode") || stringparam.getKey().equalsIgnoreCase("apptostart") || stringparam.getKey().equalsIgnoreCase("text")){
+                    textViewText = keyToValConvert(stringparam.getValue());
+                    //textViewText = getResources().getStringArray(R.array.pref_sliderposition_list_values)[spinner.getSelectedItemPosition()];
                 }
                 actionNew.getStringParameters().put(stringparam.getKey(), stringparam.getValue());
             }
 
             Set<Map.Entry<String, Integer>> set3 = action.getIntParameters().entrySet();
             for (Map.Entry<String, Integer> intparam : set3) {
-                if (intparam.getKey().equalsIgnoreCase("brightness_level")){
+                if (intparam.getKey().equalsIgnoreCase("brightness_level") || intparam.getKey().equalsIgnoreCase("volume")){
                     textViewText = textViewText + ", " + intparam.getValue();
                 }
+
                 actionNew.getIntParameters().put(intparam.getKey(), intparam.getValue());
             }
 
@@ -292,19 +297,25 @@ public class DynamicActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK){
                 String selectedValue = data.getStringExtra("selectedValue");
                 String selectedKey = data.getStringExtra("selectedKey");
+                String actionKey = data.getStringExtra("actionKey");
 
                 if (lastConfigureOpenedTextViewSpinner != null && lastConfigureOpenedSpinner != null){
                     SliderAction action = (SliderAction) lastConfigureOpenedSpinner.getSelectedItem();
 
                     action.getStringParameters().put("mode", selectedKey);
 
-                    if (selectedKey.equals(getResources().getString(R.string.screen_brightness_level))){
+                    if (selectedKey.equalsIgnoreCase(getResources().getString(R.string.screen_brightness_level))){
                         int lvl = data.getIntExtra("brightness_level", 100);
-                        lastConfigureOpenedTextViewSpinner.setText(selectedValue + ", " + lvl);
+                        lastConfigureOpenedTextViewSpinner.setText(keyToValConvert(selectedValue) + ", " + lvl);
                         action.getIntParameters().put("brightness_level", lvl);
                     }
+                    else if (actionKey.equalsIgnoreCase(getResources().getString(R.string.AUDIO_VOLUME))){
+                        int vol = data.getIntExtra("volume", 5);
+                        lastConfigureOpenedTextViewSpinner.setText(keyToValConvert(selectedValue) + ": " + vol);
+                        action.getIntParameters().put("volume", vol);
+                    }
                     else{
-                        lastConfigureOpenedTextViewSpinner.setText(selectedValue);
+                        lastConfigureOpenedTextViewSpinner.setText(keyToValConvert(selectedValue));
                     }
                 }
             }
@@ -325,5 +336,29 @@ public class DynamicActivity extends AppCompatActivity {
                 }
             }
         }
+        else if (requestCode == 3){
+            if (resultCode == Activity.RESULT_OK){
+                String selectedValue = data.getStringExtra("text");
+
+                if (lastConfigureOpenedTextViewSpinner != null && lastConfigureOpenedSpinner != null){
+                    SliderAction action = (SliderAction) lastConfigureOpenedSpinner.getSelectedItem();
+                    lastConfigureOpenedTextViewSpinner.setText(selectedValue);
+                    action.getStringParameters().put("text", selectedValue);
+                }
+            }
+        }
+    }
+
+    private String keyToValConvert(String key){
+        String val = key;
+
+        try{
+            int keyPos = Arrays.asList(getResources().getStringArray(R.array.key_to_val_keys)).indexOf(key);
+            val = getResources().getStringArray(R.array.key_to_val_vals)[keyPos];
+        }
+        catch (Exception e){
+            return val;
+        }
+        return val;
     }
 }
