@@ -48,6 +48,7 @@
         <item>Flashlight</item>
         <item>GPS</item>
         <item>Mobile Data</item>
+        <item>Notification LED</item>
         <item>Notifications on lock screen</item>
         <item>Preferred Network</item>
         <item>Screen Orientation</item>
@@ -69,6 +70,7 @@
         <item>FLASHLIGHT</item>
         <item>GPS</item>
         <item>MOBILE_DATA</item>
+        <item>@string/NOTIFICATION_LED</item>
         <item>@string/LOCK_SCREEN_NOTIFICATION</item>
         <item>PREFER_NETWORK</item>
         <item>SCREEN_ORIENTATION</item>
@@ -103,6 +105,7 @@
         <item>@string/BATTERY_SAVING</item>
         <item>@string/BATTERY_SAVING_AUTOMATIC</item>
         <item>@string/LOCK_SCREEN_NOTIFICATION</item>
+        <item>@string/NOTIFICATION_LED</item>
     </string-array>
 
 
@@ -162,6 +165,15 @@
         <item>LEVEL</item>
     </string-array>
 
+    <string-array name="notification_led_titles">
+        <item>Allow LED to glow</item>
+        <item>Block LED from glowing</item>
+    </string-array>
+    <string-array name="notification_led_values">
+        <item>@string/ALLOW_LED</item>
+        <item>@string/DENY_LED</item>
+    </string-array>
+
     <string name="screen_brightness_level">LEVEL</string>
 
     <string-array name="lock_screen_notification_titles">
@@ -189,6 +201,8 @@
     <string name="BATTERY_SAVING_NEVER">BATTERY_SAVING_NEVER</string>
     <string name="BATTERY_SAVING_5">BATTERY_SAVING_5</string>
     <string name="BATTERY_SAVING_15">BATTERY_SAVING_15</string>
+
+
 
     <string-array name="volume_titles">
         <item>Notification volume</item>
@@ -348,6 +362,9 @@
         <item>Never</item>
         <item>At 5% battery</item>
         <item>At 15% battery</item>
+        <item>Notification LED</item>
+        <item>Allow LED to glow</item>
+        <item>Block LED from glowing</item>
     </string-array>
 
     <string-array name="key_to_val_keys">
@@ -393,6 +410,9 @@
         <item>@string/BATTERY_SAVING_NEVER</item>
         <item>@string/BATTERY_SAVING_5</item>
         <item>@string/BATTERY_SAVING_15</item>
+        <item>@string/NOTIFICATION_LED</item>
+        <item>@string/ALLOW_LED</item>
+        <item>@string/DENY_LED</item>
     </string-array>
     <string name="editTextHint">type your custom toast text here...</string>
 
@@ -401,5 +421,8 @@
     <string name="SHOW_ALL_NOTIFICATIONS">SHOW_ALL_NOTIFICATIONS</string>
     <string name="SHOW_ALL_BUT_PRIVATE_NOTIFICATIONS">SHOW_ALL_BUT_PRIVATE_NOTIFICATIONS</string>
     <string name="DONT_SHOW_NOTIFICATIONS">DONT_SHOW_NOTIFICATIONS</string>
+    <string name="NOTIFICATION_LED">NOTIFICATION_LED</string>
+    <string name="ALLOW_LED">ALLOW_LED</string>
+    <string name="DENY_LED">DENY_LED</string>
 
 </resources>

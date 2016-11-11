@@ -87,7 +87,8 @@ public final class HookUtils { //final because the class should be handled like 
         TOAST(15),
         BATTERY_SAVING(16),
         BATTERY_SAVING_AUTOMATIC(17),
-        LOCK_SCREEN_NOTIFICATION(18);
+        LOCK_SCREEN_NOTIFICATION(18),
+        NOTIFICATION_LED(19);
 
         private final int value;
 
@@ -214,6 +215,16 @@ public final class HookUtils { //final because the class should be handled like 
                             enableBatterySaving(true);
                         else if (param.getValue().equalsIgnoreCase("off"))
                             enableBatterySaving(false);
+                    }
+                }
+            }
+            if (s.getId().equalsIgnoreCase(MyEnum.NOTIFICATION_LED.toString())){
+                for (Map.Entry<String, String> param : stringParams) {
+                    if (param.getKey().equalsIgnoreCase("mode")){
+                        if (param.getValue().equalsIgnoreCase("ALLOW_LED"))
+                            allowNotificationLED(true);
+                        else if (param.getValue().equalsIgnoreCase("DENY_LED"))
+                            allowNotificationLED(false);
                     }
                 }
             }
@@ -371,6 +382,13 @@ public final class HookUtils { //final because the class should be handled like 
             Runtime.getRuntime().exec("settings put global low_power " + (enable == true ? 1 : 0));
         } catch (IOException e) {
             Log.e("CustomAlertSlider", "enableBatterySavingException: " + e.getMessage());
+        }
+    }
+    public static void allowNotificationLED(boolean enable){
+        try {
+            Runtime.getRuntime().exec("settings put system notification_light_pulse " + (enable == true ? 1 : 0));
+        } catch (IOException e) {
+            Log.e("CustomAlertSlider", "allowNotificationLED: " + e.getMessage());
         }
     }
     public static void setBatterySavingAutomatic(int mode){

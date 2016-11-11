@@ -78,7 +78,10 @@ public class DynamicSubActivityComboBox extends AppCompatActivity {
             values = getResources().getStringArray(R.array.battery_saver_automatic_values);
             titles = getResources().getStringArray(R.array.battery_saver_automatic_titles);
         }
-        else{
+        else if (getResources().getString(R.string.NOTIFICATION_LED).equals(selectedKey)){
+            values = getResources().getStringArray(R.array.notification_led_values);
+            titles = getResources().getStringArray(R.array.notification_led_titles);
+        }else{
             values = getResources().getStringArray(R.array.onOff_values);
             titles = getResources().getStringArray(R.array.onOff_titles);
         }
