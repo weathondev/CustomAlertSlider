@@ -469,6 +469,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             settings.edit().clear().apply(); //put that away in the next version!!
             bootPreferences.edit().clear().apply();//put that away in the next version!!
             settings.edit().putBoolean("first_time_started_1.0.4", false).apply();
+        }else if (settings.getBoolean("first_time_started_1.0.13", true)){
+            settings.edit().remove("topPosition");
+            settings.edit().remove("midPosition");
+            settings.edit().remove("botPosition");
+            settings.edit().putBoolean("first_time_started_1.0.4", false).apply();
+            settings.edit().putBoolean("first_time_started_1.0.13", false).apply();
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle(getResources().getString(R.string.AlertDialogTitle));
+            dialog.setMessage(getResources().getString(R.string.AlertDialogMessageDataDeleted));
+            dialog.setNeutralButton(getResources().getString(R.string.Ok), null);
+            dialog.create().show();
         }
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new GeneralPreferenceFragment())

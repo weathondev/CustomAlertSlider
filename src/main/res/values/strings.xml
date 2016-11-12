@@ -243,6 +243,8 @@
     You can even adjust the volume with the hardware buttons. The same applies if you boot the phone up with the bottom position. It will be shown as "All Notifications" but it is silent
     and you will not be able to adjust the volume.</string>
     <string name="AlertDialogTitle">Warning!</string>
+    <string name="AlertDialogMessageDataDeleted">All position-specific data was deleted as written in the changelog. This was needed, because of a huge refactoring in order
+    to support actions with parameters (like brightness level). Sorry for that!</string>
 
     <string name="AlertDialogMessage_VibrateMode">In order to let the Vibrate Mode work correctly, the priority settings need to be adjusted. You can find them
     under your phones settings -> alert slider -> priority mode. Set Calls/Messages to From Anyone. When you want that the phone also vibrates
