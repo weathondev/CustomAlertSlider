@@ -57,9 +57,8 @@ public class HookReverseSliderAtBoot implements IXposedHookLoadPackage {
                     if (settings.getBoolean("comingFromBoot", false)) {
                         int newNotificationMode = (int) param.args[0];
                         sendSliderChangeIntent(AndroidAppHelper.currentApplication(), newNotificationMode, true);
-
                         ArrayList<SliderAction> positionActions = null;
-
+                        settings.edit().putInt("currentPosition", newNotificationMode).apply();
                         if(newNotificationMode == HookUtils.TotalSilenceZenValOxygen){
                             positionActions = getActionsForPosition("topPosition", settings);
                         }

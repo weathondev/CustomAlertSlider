@@ -45,6 +45,7 @@
         <item>Automatic Battery Saver</item>
         <item>Battery Saver</item>
         <item>Bluetooth</item>
+        <item>Charging LED</item>
         <item>Flashlight</item>
         <item>GPS</item>
         <item>Mobile Data</item>
@@ -67,6 +68,7 @@
         <item>@string/BATTERY_SAVING_AUTOMATIC</item>
         <item>@string/BATTERY_SAVING</item>
         <item>BLUETOOTH</item>
+        <item>@string/CHARGING_LED</item>
         <item>FLASHLIGHT</item>
         <item>GPS</item>
         <item>MOBILE_DATA</item>
@@ -106,6 +108,7 @@
         <item>@string/BATTERY_SAVING_AUTOMATIC</item>
         <item>@string/LOCK_SCREEN_NOTIFICATION</item>
         <item>@string/NOTIFICATION_LED</item>
+        <item>@string/CHARGING_LED</item>
     </string-array>
 
 
@@ -365,6 +368,7 @@
         <item>Notification LED</item>
         <item>Allow LED to glow</item>
         <item>Block LED from glowing</item>
+        <item>Charging LED</item>
     </string-array>
 
     <string-array name="key_to_val_keys">
@@ -413,6 +417,7 @@
         <item>@string/NOTIFICATION_LED</item>
         <item>@string/ALLOW_LED</item>
         <item>@string/DENY_LED</item>
+        <item>@string/CHARGING_LED</item>
     </string-array>
     <string name="editTextHint">type your custom toast text here...</string>
 
@@ -424,5 +429,6 @@
     <string name="NOTIFICATION_LED">NOTIFICATION_LED</string>
     <string name="ALLOW_LED">ALLOW_LED</string>
     <string name="DENY_LED">DENY_LED</string>
+    <string name="CHARGING_LED">CHARGING_LED</string>
 
 </resources>

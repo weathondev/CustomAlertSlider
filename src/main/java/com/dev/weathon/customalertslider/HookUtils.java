@@ -88,7 +88,8 @@ public final class HookUtils { //final because the class should be handled like 
         BATTERY_SAVING(16),
         BATTERY_SAVING_AUTOMATIC(17),
         LOCK_SCREEN_NOTIFICATION(18),
-        NOTIFICATION_LED(19);
+        NOTIFICATION_LED(19),
+        CHARGING_LED(20);
 
         private final int value;
 

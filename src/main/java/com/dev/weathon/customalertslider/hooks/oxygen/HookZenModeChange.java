@@ -48,7 +48,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
  * Created by Joshua on 05.08.2016.
  */
 public class HookZenModeChange implements IXposedHookLoadPackage {
-    private int newNotificationMode = 2;
+    public int newNotificationMode = 2;
     private boolean setResultNull = false;
 
     public void handleLoadPackage(final LoadPackageParam lpparam) throws Throwable {
@@ -89,6 +89,8 @@ public class HookZenModeChange implements IXposedHookLoadPackage {
 
                     newNotificationMode = (int) param.args[0];
                     sendSliderChangeIntent(AndroidAppHelper.currentApplication(), newNotificationMode, false);
+                    settings.edit().putInt("currentPosition", newNotificationMode).apply();
+
 
                     setResultNull = false;
                     ArrayList<SliderAction> positionActions = null;

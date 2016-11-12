@@ -7,3 +7,4 @@ com.dev.weathon.customalertslider.hooks.HookRemoveDndIconFromStatusBar
 com.dev.weathon.customalertslider.hooks.oxygen.HookExtendedVolumeControlLayout
 com.dev.weathon.customalertslider.hooks.oxygen.HookExtendedVolumeControlZenFooter
 com.dev.weathon.customalertslider.hooks.cyanogen.HookZenModeChangeCyanogen
+com.dev.weathon.customalertslider.hooks.HookChargingLED
