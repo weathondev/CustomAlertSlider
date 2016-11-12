@@ -97,15 +97,15 @@ public class HookZenModeChange implements IXposedHookLoadPackage {
 
                     if(newNotificationMode == HookUtils.TotalSilenceZenValOxygen){
                         XposedBridge.log("newNotificationMode=TotalSilenceZenValOxygen" + newNotificationMode);
-                        positionActions = getActionsForPosition("topPosition", settings);
+                        positionActions = getActionsForPosition("topPositionObject", settings);
                     }
                     else if(newNotificationMode == HookUtils.PriorityZenValOxygen){
                         XposedBridge.log("newNotificationMode=PriorityZenValOxygen" + newNotificationMode);
-                        positionActions = getActionsForPosition("midPosition", settings);
+                        positionActions = getActionsForPosition("midPositionObject", settings);
                     }
                     else if(newNotificationMode == HookUtils.AllNotificationZenValOxygen){
                         XposedBridge.log("newNotificationMode=AllNotificationZenValOxygen" + newNotificationMode);
-                        positionActions = getActionsForPosition("botPosition", settings);
+                        positionActions = getActionsForPosition("botPositionObject", settings);
                     }
 
                     boolean oneOfTheZenModeSwitches = false;
@@ -137,9 +137,9 @@ public class HookZenModeChange implements IXposedHookLoadPackage {
                     SharedPreferences settings = new RemotePreferences(AndroidAppHelper.currentApplication(), "com.dev.weathon.customalertslider", "com.dev.weathon.customalertslider_preferences");
                     Log.w("CustomAlertSlider", "AfterChangingParam: NewValue = " + param.args[0] + ", OldValue = " + param.args[1]);
 
-                    ArrayList<SliderAction> TopPositionActions = getActionsForPosition("topPosition", settings);
-                    ArrayList<SliderAction> MidPositionActions = getActionsForPosition("midPosition", settings);
-                    ArrayList<SliderAction> BotPositionActions = getActionsForPosition("botPosition", settings);
+                    ArrayList<SliderAction> TopPositionActions = getActionsForPosition("topPositionObject", settings);
+                    ArrayList<SliderAction> MidPositionActions = getActionsForPosition("midPositionObject", settings);
+                    ArrayList<SliderAction> BotPositionActions = getActionsForPosition("botPositionObject", settings);
 
 
                     if (newNotificationMode == HookUtils.TotalSilenceZenValOxygen)

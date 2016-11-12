@@ -85,9 +85,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
 
     public static Preference startAppPreference;
-    private static Preference topPosition;
-    private static Preference midPosition;
-    private static Preference botPosition;
+    private static Preference topPositionObject;
+    private static Preference midPositionObject;
+    private static Preference botPositionObject;
 
     private static SliderPositionValue topPositionSliderVal;
     private static SliderPositionValue midPositionSliderVal;
@@ -139,7 +139,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     }
                 }
                 /*
-                else if (preference.getKey().equals("topPosition") || preference.getKey().equals("midPosition") || preference.getKey().equals("botPosition")){
+                else if (preference.getKey().equals("topPositionObject") || preference.getKey().equals("midPositionObject") || preference.getKey().equals("botPositionObject")){
                     if (value.equals("STARTAPP")){
                         preference.setSummary(preference.getSummary() + ": " + preference.getContext().getSharedPreferences("com.dev.weathon.customalertslider_preferences", MODE_PRIVATE).getString(preference.getKey() + "_app",""));
 
@@ -270,7 +270,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 preference.getContext().startActivity(browserIntent);
                 return true;
             }
-            else if (preference.getKey().equals("topPosition")){
+            else if (preference.getKey().equals("topPositionObject")){
                 Activity activity = getActivity();
                 Intent intent = new Intent(activity, DynamicActivity.class);
                 intent.putExtra("positionKey", preference.getKey());
@@ -278,7 +278,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 activity.startActivityForResult(intent, 1);
                 return true;
             }
-            else if (preference.getKey().equals("midPosition")){
+            else if (preference.getKey().equals("midPositionObject")){
                 Activity activity = getActivity();
                 Intent intent = new Intent(activity, DynamicActivity.class);
                 intent.putExtra("positionKey", preference.getKey());
@@ -286,7 +286,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 activity.startActivityForResult(intent, 2);
                 return true;
             }
-            else if (preference.getKey().equals("botPosition")){
+            else if (preference.getKey().equals("botPositionObject")){
                 Activity activity = getActivity();
                 Intent intent = new Intent(activity, DynamicActivity.class);
                 intent.putExtra("positionKey", preference.getKey());
@@ -469,30 +469,19 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             settings.edit().clear().apply(); //put that away in the next version!!
             bootPreferences.edit().clear().apply();//put that away in the next version!!
             settings.edit().putBoolean("first_time_started_1.0.4", false).apply();
-        }else if (settings.getBoolean("first_time_started_1.0.13", true)){
-            settings.edit().remove("topPosition");
-            settings.edit().remove("midPosition");
-            settings.edit().remove("botPosition");
-            settings.edit().putBoolean("first_time_started_1.0.4", false).apply();
-            settings.edit().putBoolean("first_time_started_1.0.13", false).apply();
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setTitle(getResources().getString(R.string.AlertDialogTitle));
-            dialog.setMessage(getResources().getString(R.string.AlertDialogMessageDataDeleted));
-            dialog.setNeutralButton(getResources().getString(R.string.Ok), null);
-            dialog.create().show();
         }
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new GeneralPreferenceFragment())
                 .commit();
 
         Gson gson = new Gson();
-        String json = settings.getString("topPosition", "");
+        String json = settings.getString("topPositionObject", "");
         topPositionSliderVal = gson.fromJson(json, SliderPositionValue.class);
         gson = new Gson();
-        json = settings.getString("midPosition", "");
+        json = settings.getString("midPositionObject", "");
         midPositionSliderVal = gson.fromJson(json, SliderPositionValue.class);
         gson = new Gson();
-        json = settings.getString("botPosition", "");
+        json = settings.getString("botPositionObject", "");
         botPositionSliderVal = gson.fromJson(json, SliderPositionValue.class);
 
         //updateResources(this, settings.getString("language", "system"));
@@ -639,9 +628,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             //bindsummary for multilistPreferences
             /*
-            bindPreferenceSummaryToValueForMultiList(findPreference("topPosition"));
-            bindPreferenceSummaryToValueForMultiList(findPreference("midPosition"));
-            bindPreferenceSummaryToValueForMultiList(findPreference("botPosition"));
+            bindPreferenceSummaryToValueForMultiList(findPreference("topPositionObject"));
+            bindPreferenceSummaryToValueForMultiList(findPreference("midPositionObject"));
+            bindPreferenceSummaryToValueForMultiList(findPreference("botPositionObject"));
             */
 
             //bindsummary for TextPreferences
@@ -657,19 +646,19 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             //do stuff when preference get clicked
 
-            topPosition = findPreference("topPosition");
-            midPosition = findPreference("midPosition");
-            botPosition = findPreference("botPosition");
+            topPositionObject = findPreference("topPositionObject");
+            midPositionObject = findPreference("midPositionObject");
+            botPositionObject = findPreference("botPositionObject");
 
 
             bindPreferenceOnClick(findPreference("donate"));
-            bindPreferenceOnClick(topPosition);
-            bindPreferenceOnClick(midPosition);
-            bindPreferenceOnClick(botPosition);
+            bindPreferenceOnClick(topPositionObject);
+            bindPreferenceOnClick(midPositionObject);
+            bindPreferenceOnClick(botPositionObject);
 
-            setPositionSummarys(topPosition, "topPosition", topPositionSliderVal);
-            setPositionSummarys(midPosition, "midPosition", midPositionSliderVal);
-            setPositionSummarys(botPosition, "botPosition", botPositionSliderVal);
+            setPositionSummarys(topPositionObject, "topPositionObject", topPositionSliderVal);
+            setPositionSummarys(midPositionObject, "midPositionObject", midPositionSliderVal);
+            setPositionSummarys(botPositionObject, "botPositionObject", botPositionSliderVal);
         }
     }
 
@@ -677,17 +666,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1){ //top
             if (resultCode == Activity.RESULT_OK) {
-                topPosition.setSummary(data.getStringExtra("summary"));
+                topPositionObject.setSummary(data.getStringExtra("summary"));
             }
         }
         else if (requestCode == 2){ //mid
             if (resultCode == Activity.RESULT_OK) {
-                midPosition.setSummary(data.getStringExtra("summary"));
+                midPositionObject.setSummary(data.getStringExtra("summary"));
             }
         }
         else if (requestCode == 3){ //bot
             if (resultCode == Activity.RESULT_OK) {
-                botPosition.setSummary(data.getStringExtra("summary"));
+                botPositionObject.setSummary(data.getStringExtra("summary"));
             }
         }
 

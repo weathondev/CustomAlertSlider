@@ -27,15 +27,15 @@
 
     <Preference
         android:title="@string/pref_title_topPosition"
-        android:key="topPosition"/>
+        android:key="topPositionObject"/>
 
     <Preference
         android:title="@string/pref_title_midPosition"
-        android:key="midPosition"/>
+        android:key="midPositionObject"/>
 
     <Preference
         android:title="@string/pref_title_botPosition"
-        android:key="botPosition"/>
+        android:key="botPositionObject"/>
 
     <PreferenceScreen
         android:title="@string/pref_title_vibrateInsteadPriority"

@@ -35,24 +35,24 @@ public class HookChargingLED implements IXposedHookLoadPackage {
 
                 if (usedOS.equals("oxygen")) {
                     if(zenValue == HookUtils.TotalSilenceZenValOxygen){
-                        positionActions = getActionsForPosition("topPosition", settings);
+                        positionActions = getActionsForPosition("topPositionObject", settings);
                     }
                     else if(zenValue == HookUtils.PriorityZenValOxygen){
-                        positionActions = getActionsForPosition("midPosition", settings);
+                        positionActions = getActionsForPosition("midPositionObject", settings);
                     }
                     else if(zenValue == HookUtils.AllNotificationZenValOxygen){
-                        positionActions = getActionsForPosition("botPosition", settings);
+                        positionActions = getActionsForPosition("botPositionObject", settings);
                     }
                 }
                 else{
                     if(zenValue == settings.getInt("SliderIsOnTop", 0)){
-                        positionActions = getActionsForPosition("topPosition", settings);
+                        positionActions = getActionsForPosition("topPositionObject", settings);
                     }
                     else if(zenValue == settings.getInt("SliderIsOnMid", 0)){
-                        positionActions = getActionsForPosition("midPosition", settings);
+                        positionActions = getActionsForPosition("midPositionObject", settings);
                     }
                     else if(zenValue == settings.getInt("SliderIsOnBot", 0)){
-                        positionActions = getActionsForPosition("botPosition", settings);
+                        positionActions = getActionsForPosition("botPositionObject", settings);
                     }
                 }
 

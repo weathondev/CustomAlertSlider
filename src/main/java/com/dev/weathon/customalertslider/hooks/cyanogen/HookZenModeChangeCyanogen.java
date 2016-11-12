@@ -78,7 +78,7 @@ public class HookZenModeChangeCyanogen implements IXposedHookLoadPackage {
                     }
 
                     Gson gson = new Gson();
-                    String json = settings.getString("botPosition", "");
+                    String json = settings.getString("botPositionObject", "");
                     SliderPositionValue obj = gson.fromJson(json, SliderPositionValue.class);
                     if (obj != null){
                         ArrayList<SliderAction> actions = obj.getActions();
@@ -119,15 +119,15 @@ public class HookZenModeChangeCyanogen implements IXposedHookLoadPackage {
 
                     if(newNotificationMode == settings.getInt("SliderIsOnTop", 0)){
                         XposedBridge.log("newNotificationMode=TotalSilenceZenValOxygen" + newNotificationMode);
-                        positionActions = getActionsForPosition("topPosition", settings);
+                        positionActions = getActionsForPosition("topPositionObject", settings);
                     }
                     else if(newNotificationMode == settings.getInt("SliderIsOnMid", 0)){
                         XposedBridge.log("newNotificationMode=PriorityZenValOxygen" + newNotificationMode);
-                        positionActions = getActionsForPosition("midPosition", settings);
+                        positionActions = getActionsForPosition("midPositionObject", settings);
                     }
                     else if(newNotificationMode == settings.getInt("SliderIsOnBot", 0)){
                         XposedBridge.log("newNotificationMode=AllNotificationZenValOxygen" + newNotificationMode);
-                        positionActions = getActionsForPosition("botPosition", settings);
+                        positionActions = getActionsForPosition("botPositionObject", settings);
                     }
 
                     boolean oneOfTheZenModeSwitches = false;
@@ -163,9 +163,9 @@ public class HookZenModeChangeCyanogen implements IXposedHookLoadPackage {
                     SharedPreferences settings = new RemotePreferences(AndroidAppHelper.currentApplication(), "com.dev.weathon.customalertslider", "com.dev.weathon.customalertslider_preferences");
 
                     if (!settings.getBoolean("comingFromBoot", true)){
-                        ArrayList<SliderAction> TopPositionActions = getActionsForPosition("topPosition", settings);
-                        ArrayList<SliderAction> MidPositionActions = getActionsForPosition("midPosition", settings);
-                        ArrayList<SliderAction> BotPositionActions = getActionsForPosition("botPosition", settings);
+                        ArrayList<SliderAction> TopPositionActions = getActionsForPosition("topPositionObject", settings);
+                        ArrayList<SliderAction> MidPositionActions = getActionsForPosition("midPositionObject", settings);
+                        ArrayList<SliderAction> BotPositionActions = getActionsForPosition("botPositionObject", settings);
 
 
                         if (newNotificationMode == settings.getInt("SliderIsOnTop", 0))

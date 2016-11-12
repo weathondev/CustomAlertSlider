@@ -60,13 +60,13 @@ public class HookReverseSliderAtBoot implements IXposedHookLoadPackage {
                         ArrayList<SliderAction> positionActions = null;
                         settings.edit().putInt("currentPosition", newNotificationMode).apply();
                         if(newNotificationMode == HookUtils.TotalSilenceZenValOxygen){
-                            positionActions = getActionsForPosition("topPosition", settings);
+                            positionActions = getActionsForPosition("topPositionObject", settings);
                         }
                         else if(newNotificationMode == HookUtils.PriorityZenValOxygen){
-                            positionActions = getActionsForPosition("midPosition", settings);
+                            positionActions = getActionsForPosition("midPositionObject", settings);
                         }
                         else if(newNotificationMode == HookUtils.AllNotificationZenValOxygen){
-                            positionActions = getActionsForPosition("botPosition", settings);
+                            positionActions = getActionsForPosition("botPositionObject", settings);
                         }
 
                         boolean oneOfTheZenModeSwitches = false;
