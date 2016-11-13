@@ -8,8 +8,8 @@ android {
         applicationId "com.dev.weathon.customalertslider"
         minSdkVersion 23
         targetSdkVersion 23
-        versionCode 15
-        versionName "1.0.14"
+        versionCode 16
+        versionName "1.0.15"
     }
     buildTypes {
         release {
