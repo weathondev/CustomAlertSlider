@@ -100,7 +100,7 @@ public class HookChargingLED implements IXposedHookLoadPackage {
     public void handleLoadPackage(LoadPackageParam lpparam) throws Throwable {
         if (lpparam.packageName.equals("android")) {
             try {
-                XposedHelpers.findAndHookMethod("com.android.server.BatteryService$Led", lpparam.classLoader, "updateLightsLocked", new Object[]{new HookChargingLEDSubclass()});
+                //XposedHelpers.findAndHookMethod("com.android.server.BatteryService$Led", lpparam.classLoader, "updateLightsLocked", new Object[]{new HookChargingLEDSubclass()});
             } catch (Exception e) {}
         }
     }
